@@ -13,6 +13,7 @@ function ImageGenerator() {
 
   return (
     <div className="image-generator">
+      <p>This is your AI Image Generator Extension!</p>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
