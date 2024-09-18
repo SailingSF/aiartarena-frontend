@@ -8,9 +8,12 @@ function App() {
       <header className="App-header">
         <h1>AI Image Generator</h1>
       </header>
-      <main>
+      <main className="App-main">
         <ImageGenerator />
       </main>
+      <footer className="App-footer">
+        <p>© 2024 AI Image Generator. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
