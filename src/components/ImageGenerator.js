@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAPIKey } from './APIKeyContext';
+import NSFWModal from './NSFWModal';
 
 const models = [
   { id: "stabilityai/stable-diffusion-2", name: "Stable Diffusion 2", supportsNegativePrompt: true },
@@ -18,10 +19,24 @@ const ImageGenerator = ({ onEditApiKey }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { apiKey } = useAPIKey();
+  const [showNSFWWarning, setShowNSFWWarning] = useState(false);
+
+
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+   e.preventDefault();
+    const currentModel = models.find(model => model.id === selectedModel);
+    
+    if (currentModel.nsfw) {
+      setShowNSFWWarning(true);
+    } else {
+      generateImage();
+    }
+  };
+
+  const generateImage = async () => {
     setIsLoading(true);
+    setShowNSFWWarning(false);
     
     try {
       const selectedModelInfo = models.find(model => model.id === selectedModel);
@@ -61,6 +76,7 @@ const ImageGenerator = ({ onEditApiKey }) => {
       setIsLoading(false);
     }
   };
+  
 
   const currentModel = models.find(model => model.id === selectedModel);
 
@@ -143,6 +159,15 @@ const ImageGenerator = ({ onEditApiKey }) => {
           Edit API Key
         </button>
       </div>
+      <NSFWModal
+        isOpen={showNSFWWarning}
+        onClose={() => setShowNSFWWarning(false)}
+        onConfirm={() => {
+          setShowNSFWWarning(false);
+          generateImage();
+        }}
+        prompt={prompt}
+      />
     </div>
   );
 };
