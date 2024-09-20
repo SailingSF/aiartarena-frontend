@@ -100,7 +100,7 @@ const ImageGenerator = ({ onLogout }) => {
       setGeneratedImage(imageUrl);
     } catch (error) {
       console.error("Error generating image:", error);
-      alert(`Error generating image: ${error.message}. Please check your API key and try again.`);
+      alert(`Error generating image: ${error.message}. This is probably not Max's fault.`);
     } finally {
       setIsLoading(false);
     }
@@ -132,14 +132,14 @@ const ImageGenerator = ({ onLogout }) => {
           </div>
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
-            <input
+            <textarea
               id="prompt"
-              type="text"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Describe the image"
               required
               className="w-full p-2 border-2 border-black rounded-md text-sm"
+              rows={3} 
             />
           </div>
           {currentModel.supportsNegativePrompt && (
