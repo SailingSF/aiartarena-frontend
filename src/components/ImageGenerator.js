@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useAPIKey } from './APIKeyContext';
+import React, { useState, useEffect } from 'react';
 import NSFWModal from './NSFWModal';
 
 const models = [
@@ -12,16 +11,39 @@ const models = [
   { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true }
 ];
 
-const ImageGenerator = ({ onEditApiKey }) => {
+const MAX_REQUESTS = 20;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+const ImageGenerator = ({ onLogout }) => {
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState(models[0].id);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { apiKey } = useAPIKey();
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
+  const [requestCount, setRequestCount] = useState(0);
+  const [lastRequestTime, setLastRequestTime] = useState(0);
 
+  useEffect(() => {
+    const storedCount = localStorage.getItem('requestCount');
+    const storedTime = localStorage.getItem('lastRequestTime');
+    if (storedCount && storedTime) {
+      setRequestCount(parseInt(storedCount));
+      setLastRequestTime(parseInt(storedTime));
+    }
+  }, []);
 
+  const updateRateLimit = () => {
+    const currentTime = Date.now();
+    if (currentTime - lastRequestTime > WINDOW_MS) {
+      setRequestCount(1);
+    } else {
+      setRequestCount(prevCount => prevCount + 1);
+    }
+    setLastRequestTime(currentTime);
+    localStorage.setItem('requestCount', requestCount + 1);
+    localStorage.setItem('lastRequestTime', currentTime);
+  };
 
   const handleSubmit = async (e) => {
    e.preventDefault();
@@ -35,8 +57,15 @@ const ImageGenerator = ({ onEditApiKey }) => {
   };
 
   const generateImage = async () => {
+    if (requestCount >= MAX_REQUESTS) {
+      const timeToWait = WINDOW_MS - (Date.now() - lastRequestTime);
+      alert(`Rate limit exceeded. Please try again in ${Math.ceil(timeToWait / 60000)} minutes.`);
+      return;
+    }
+
     setIsLoading(true);
     setShowNSFWWarning(false);
+    updateRateLimit();
     
     try {
       const selectedModelInfo = models.find(model => model.id === selectedModel);
@@ -53,7 +82,7 @@ const ImageGenerator = ({ onEditApiKey }) => {
         `https://api-inference.huggingface.co/models/${selectedModel}`,
         {
           headers: {
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${process.env.REACT_APP_HUGGINGFACE_API_KEY}`,
             "Content-Type": "application/json",
           },
           method: "POST",
@@ -153,15 +182,18 @@ const ImageGenerator = ({ onEditApiKey }) => {
       </div>
       <div className="bg-stone-50 p-4 border-t-2 border-black">
         <button
-          onClick={onEditApiKey}
+          onClick={onLogout}
           className="w-full bg-gray-200 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300 text-sm"
         >
-          Edit API Key
+          Logout
         </button>
       </div>
       <NSFWModal
         isOpen={showNSFWWarning}
-        onClose={() => setShowNSFWWarning(false)}
+        onClose={() => {
+          setShowNSFWWarning(false);
+          window.open('https://www.vatican.va/', '_blank');
+        }}
         onConfirm={() => {
           setShowNSFWWarning(false);
           generateImage();
