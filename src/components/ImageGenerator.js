@@ -62,9 +62,9 @@ const ImageGenerator = ({ onLogout }) => {
   const currentModel = models.find(model => model.id === selectedModel);
 
   return (
-    <div className="w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center">AI Image Generator</h2>
+    <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 md:p-6">
+        <h2 className="text-2xl md:text-4xl font-bold text-center">AI Image Generator</h2>
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">All of the models. None of the subscriptions.</p>
       </div>
       <div className="p-6 bg-stone-50">
@@ -110,7 +110,7 @@ const ImageGenerator = ({ onLogout }) => {
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm sm:text-base"
+            className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
           >
             {isLoading ? 'Generating...' : 'Generate Image'}
           </button>
@@ -120,7 +120,7 @@ const ImageGenerator = ({ onLogout }) => {
         {generatedImage ? (
           <div className="w-full">
             <p className="text-center text-sm font-bold text-gray-700 mb-4">Your generated image:</p>
-            <img src={generatedImage} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg" />
+            <img src={generatedImage} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
           </div>
         ) : (
           <div className="text-center text-gray-500 w-full">
