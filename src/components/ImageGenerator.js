@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import NSFWModal from './NSFWModal';
+import axios from 'axios';
 
 const models = [
   { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false },
@@ -11,8 +12,7 @@ const models = [
   { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true }
 ];
 
-const MAX_REQUESTS = 20;
-const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 const ImageGenerator = ({ onLogout }) => {
   const [prompt, setPrompt] = useState('');
@@ -21,29 +21,6 @@ const ImageGenerator = ({ onLogout }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
-  const [requestCount, setRequestCount] = useState(0);
-  const [lastRequestTime, setLastRequestTime] = useState(0);
-
-  useEffect(() => {
-    const storedCount = localStorage.getItem('requestCount');
-    const storedTime = localStorage.getItem('lastRequestTime');
-    if (storedCount && storedTime) {
-      setRequestCount(parseInt(storedCount));
-      setLastRequestTime(parseInt(storedTime));
-    }
-  }, []);
-
-  const updateRateLimit = () => {
-    const currentTime = Date.now();
-    if (currentTime - lastRequestTime > WINDOW_MS) {
-      setRequestCount(1);
-    } else {
-      setRequestCount(prevCount => prevCount + 1);
-    }
-    setLastRequestTime(currentTime);
-    localStorage.setItem('requestCount', requestCount + 1);
-    localStorage.setItem('lastRequestTime', currentTime);
-  };
 
   const handleSubmit = async (e) => {
    e.preventDefault();
@@ -57,46 +34,21 @@ const ImageGenerator = ({ onLogout }) => {
   };
 
   const generateImage = async () => {
-    if (requestCount >= MAX_REQUESTS) {
-      const timeToWait = WINDOW_MS - (Date.now() - lastRequestTime);
-      alert(`Rate limit exceeded. Please try again in ${Math.ceil(timeToWait / 60000)} minutes.`);
-      return;
-    }
-
     setIsLoading(true);
     setShowNSFWWarning(false);
-    updateRateLimit();
     
     try {
-      const selectedModelInfo = models.find(model => model.id === selectedModel);
-      
-      const requestBody = {
-        inputs: prompt,
-      };
+      const response = await axios.post(`${API_BASE_URL}/api/generate-image/`, {
+        prompt,
+        negative_prompt: negativePrompt,
+        selected_model: selectedModel
+      }, {
+        responseType: 'arraybuffer'  // This is important for handling binary data
+      });
 
-      if (negativePrompt && selectedModelInfo.supportsNegativePrompt) {
-        requestBody.parameters = { negative_prompt: negativePrompt };
-      }
-
-      const response = await fetch(
-        `https://api-inference.huggingface.co/models/${selectedModel}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_HUGGINGFACE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(requestBody),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const result = await response.blob();
-      const imageUrl = URL.createObjectURL(result);
+      // Convert the array buffer to a blob
+      const blob = new Blob([response.data], { type: 'image/png' });
+      const imageUrl = URL.createObjectURL(blob);
       setGeneratedImage(imageUrl);
     } catch (error) {
       console.error("Error generating image:", error);
