@@ -9,6 +9,7 @@ const models = [
   { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false },
   { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "Stable Diffusion XL Base 1.0 (Good + Slow)", supportsNegativePrompt: true },
   { id: "Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur", name: "FLUX.1 LoRA AntiBlur (Great for realistic)", supportsNegativePrompt: false },
+  { id: "XLabs-AI/flux-RealismLora", name: "Flux Realism (Great for realistic portraits)", supportsNegativePrompt: false },
   { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true }
 ];
 
