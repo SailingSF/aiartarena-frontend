@@ -19,7 +19,7 @@ const ImageGenerator = ({ onLogout }) => {
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState(models[0].id);
-  const [generatedImage, setGeneratedImage] = useState(null);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
 
@@ -43,14 +43,9 @@ const ImageGenerator = ({ onLogout }) => {
         prompt,
         negative_prompt: negativePrompt,
         selected_model: selectedModel
-      }, {
-        responseType: 'arraybuffer'  // This is important for handling binary data
       });
 
-      // Convert the array buffer to a blob
-      const blob = new Blob([response.data], { type: 'image/png' });
-      const imageUrl = URL.createObjectURL(blob);
-      setGeneratedImage(imageUrl);
+      setGeneratedImageUrl(response.data.image_url);
     } catch (error) {
       console.error("Error generating image:", error);
       alert(`Error generating image: ${error.message}. This is probably not Max's fault.`);
@@ -118,10 +113,10 @@ const ImageGenerator = ({ onLogout }) => {
         </form>
       </div>
       <div className="bg-stone-100 p-6">
-        {generatedImage ? (
+        {generatedImageUrl ? (
           <div className="w-full">
             <p className="text-center text-sm font-bold text-gray-700 mb-4">Your generated image:</p>
-            <img src={generatedImage} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
+            <img src={generatedImageUrl} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
           </div>
         ) : (
           <div className="text-center text-gray-500 w-full">
