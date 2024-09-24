@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import NSFWModal from './NSFWModal';
 import axios from 'axios';
 
@@ -128,13 +129,13 @@ const ImageGenerator = ({ onLogout }) => {
           </div>
         )}
       </div>
-      <div className="bg-stone-50 p-4 border-t-2 border-black">
-        <button
-          onClick={onLogout}
-          className="w-full bg-gray-200 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300 text-sm"
+      <div className="bg-stone-50 p-4 border-t-2 border-black flex justify-center">
+        <Link
+          to="/"
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300"
         >
-          Logout
-        </button>
+          Home
+        </Link>
       </div>
       <NSFWModal
         isOpen={showNSFWWarning}
