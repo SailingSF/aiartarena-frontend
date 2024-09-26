@@ -4,10 +4,10 @@ import NSFWModal from './NSFWModal';
 import axios from 'axios';
 
 const models = [
-  { id: "fal-ai/flux/schnell", name: "FLUX.1 [schnell]", supportsNegativePrompt: false},
-  { id: "fal-ai/flux/dev", name: "FLUX.1 [dev]", supportsNegativePrompt: false },
-  { id: "fal-ai/stable-diffusion-v3-medium", name: "Stable Diffusion V3", supportsNegativePrompt: true },
-  { id: "fal-ai/playground-v25", name: "Playground v2.5", supportsNegativePrompt: true }
+  { id: "flux/schnell", name: "FLUX.1 [schnell]", supportsNegativePrompt: false},
+  { id: "flux/dev", name: "FLUX.1 [dev]", supportsNegativePrompt: false },
+  { id: "stable-diffusion-v3-medium", name: "Stable Diffusion V3", supportsNegativePrompt: true },
+  { id: "playground-v25", name: "Playground v2.5", supportsNegativePrompt: true }
 ];
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
