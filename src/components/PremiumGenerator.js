@@ -17,8 +17,16 @@ const PremiumGenerator = ({ onLogout }) => {
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState(models[0].id);
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
+  const [improvedPrompt, setImprovedPrompt] = useState(null);  
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
+
+  const clearAllPrompts = () => {
+    setPrompt('');
+    setNegativePrompt('');
+    setImprovedPrompt(null);
+    setGeneratedImageUrl(null);
+  };
 
   const handleSubmit = async (e) => {
    e.preventDefault();
@@ -47,6 +55,7 @@ const PremiumGenerator = ({ onLogout }) => {
       };
       const response = await axios.post(`${API_BASE_URL}/api/generate-image-premium/`, {
         prompt,
+        improved_prompt: improvedPrompt || '',
         negative_prompt: negativePrompt,
         selected_model: selectedModel
         },
@@ -54,6 +63,8 @@ const PremiumGenerator = ({ onLogout }) => {
       );
 
       setGeneratedImageUrl(response.data.image_url);
+      setImprovedPrompt(response.data.improved_prompt);
+
     } catch (error) {
       if (error.response && error.response.status === 401) {
         // Token is invalid or expired
@@ -116,13 +127,35 @@ const PremiumGenerator = ({ onLogout }) => {
               />
             </div>
           )}
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
-          >
-            {isLoading ? 'Generating...' : 'Generate Image'}
-          </button>
+          {improvedPrompt && (
+            <div>
+              <label htmlFor="improvedPrompt" className="block text-sm font-bold text-gray-700 mb-1">Improved Prompt (Optional and Final)</label>
+              <textarea
+                id="improvedPrompt"
+                value={improvedPrompt}
+                onChange={(e) => setImprovedPrompt(e.target.value)}
+                placeholder="AI improved prompt for this specific image model, this won't be altered"
+                className="w-full p-2 border-2 border-black rounded-md text-sm"
+                rows={4}
+              />
+          </div>
+          )}
+          <div className="flex space-x-4">
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="flex-1 bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
+            >
+              {isLoading ? 'Generating...' : 'Generate Image'}
+            </button>
+            <button 
+              type="button" 
+              onClick={clearAllPrompts}
+              className="flex-1 bg-gray-300 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-400 transition duration-300 text-sm md:text-base"
+            >
+              New Image
+            </button>
+          </div>
         </form>
       </div>
       <div className="bg-stone-100 p-6">
