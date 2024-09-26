@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import ImageGenerator from './components/ImageGenerator';
+import FreeImageGenerator from './components/FreeImageGenerator';
 import Gallery from './components/Gallery';
 import Home from './components/Home';
 import PasswordSetup from './components/PasswordPrompt';
+import AuthModal from './components/AuthModal';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
@@ -22,6 +24,10 @@ function App() {
     setIsAuthenticated(false);
     localStorage.removeItem('isAuthenticated');
     setIsPasswordModalOpen(true);
+  };
+
+  const handleOpenAuthModal = () => {
+    setIsAuthModalOpen(true);
   };
 
   return (
@@ -39,8 +45,8 @@ function App() {
           </div>
         ) : (
           <Routes>
-            <Route path="/" element={<Home onLogout={handleLogout} />} />
-            <Route path="/generate" element={<ImageGenerator />} />
+            <Route path="/" element={<Home onLogout={handleLogout} onOpenAuthModal={handleOpenAuthModal} />} />
+            <Route path="/generate" element={<FreeImageGenerator />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -49,6 +55,11 @@ function App() {
           isOpen={isPasswordModalOpen}
           setIsOpen={setIsPasswordModalOpen}
           onAuthenticate={setIsAuthenticated}
+        />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthenticate={() => {}} // You can add login functionality here if needed
         />
       </div>
     </BrowserRouter>
