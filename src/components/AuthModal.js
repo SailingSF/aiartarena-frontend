@@ -24,7 +24,7 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
         const endpoint = isLogin ? '/api/login/' : '/api/register/';
         const data = isLogin 
           ? { email, password }
-          : { email, password, username };
+          : { email, password, userdisplay_name: username };
         
         const response = await axios.post(`${API_BASE_URL}`+endpoint, data);
         
