@@ -14,6 +14,12 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           Free Image Generator
         </Link>
         <Link 
+          to="/premium" 
+          className="block w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 text-center"
+        >
+          <em>PREMIUM</em> Image Generator
+        </Link>
+        <Link 
           to="/gallery" 
           className="block w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 text-center"
         >

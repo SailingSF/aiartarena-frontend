@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import FreeImageGenerator from './components/FreeImageGenerator';
+import PremiumGenerator from './components/PremiumGenerator';
 import Gallery from './components/Gallery';
 import Home from './components/Home';
 import PasswordSetup from './components/PasswordPrompt';
@@ -47,6 +48,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home onLogout={handleLogout} onOpenAuthModal={handleOpenAuthModal} />} />
             <Route path="/generate" element={<FreeImageGenerator />} />
+            <Route path="/premium" element={<PremiumGenerator />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
