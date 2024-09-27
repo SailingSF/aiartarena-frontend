@@ -15,7 +15,7 @@ const Button = ({ children, onClick, className, icon: Icon }) => (
 const Home = ({ onLogout, onOpenAuthModal }) => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Welcome to the Arena</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">🏟️ Welcome to the Arena 🏟️</h1>
       <h3 className="text-xl font-bold mb-6 text-center">An easy way to make AI Images</h3>
       <div className="space-y-4 py-4">
         <div className="mb-4">
