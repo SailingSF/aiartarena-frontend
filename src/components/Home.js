@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Image, Grid, LogIn, LogOut } from 'lucide-react';
+import { LandPlot, Sparkles, Image, Grid, LogIn, LogOut } from 'lucide-react';
 
 const Button = ({ children, onClick, className, icon: Icon }) => (
   <button
@@ -18,6 +18,13 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
       <h1 className="text-3xl font-bold mb-6 text-center">🏟️ Welcome to the Arena 🏟️</h1>
       <h3 className="text-xl font-bold mb-6 text-center">An easy way to make AI Images</h3>
       <div className="space-y-4 py-4">
+        <div className="mb-6">
+        <Link to="/arena">
+          <Button className="bg-amber-400 text-black hover:bg-amber-500" icon={LandPlot}>
+            THE ARENA
+          </Button>
+        </Link>
+        </div>
         <div className="mb-4">
           <Link to="/generate">
             <Button className="bg-blue-500 text-white hover:bg-blue-600" icon={Sparkles}>
