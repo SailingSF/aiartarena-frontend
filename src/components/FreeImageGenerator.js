@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NSFWModal from './NSFWModal';
+import APIKeySetup from './APIKeySetup';
 import axios from 'axios';
+import { HfInference } from '@huggingface/inference';
 
 const models = [
   { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false },
@@ -14,18 +16,27 @@ const models = [
   { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true }
 ];
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-const ImageGenerator = ({ onLogout }) => {
+const FreeImageGenerator = ({ onLogout }) => {
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState(models[0].id);
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
+  const [hfApiKey, setHfApiKey] = useState(null);
+  const [showAPIKeySetup, setShowAPIKeySetup] = useState(false);
+
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('hfApiKey');
+    if (storedApiKey) {
+      setHfApiKey(storedApiKey);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
-   e.preventDefault();
+    e.preventDefault();
     const currentModel = models.find(model => model.id === selectedModel);
     
     if (currentModel.nsfw) {
@@ -40,21 +51,52 @@ const ImageGenerator = ({ onLogout }) => {
     setShowNSFWWarning(false);
     
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/generate-image/`, {
-        prompt,
-        negative_prompt: negativePrompt,
-        selected_model: selectedModel
-      });
+      let imageUrl;
+      if (hfApiKey) {
+        // Use Hugging Face SDK
+        const hf = new HfInference(hfApiKey);
+        const result = await hf.textToImage({
+          inputs: prompt,
+          negative_prompt: negativePrompt,
+          model: selectedModel,
+        });
 
-      setGeneratedImageUrl(response.data.image_url);
+        // Convert blob to data URL
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          imageUrl = reader.result;
+          setGeneratedImageUrl(imageUrl);
+        };
+        reader.readAsDataURL(result);
+      } else {
+        // Use existing API
+        const response = await axios.post(`${API_BASE_URL}/api/generate-image/`, {
+          prompt,
+          negative_prompt: negativePrompt,
+          selected_model: selectedModel
+        });
+        imageUrl = response.data.image_url;
+        setGeneratedImageUrl(imageUrl);
+      }
     } catch (error) {
       console.error("Error generating image:", error);
-      alert(`Error generating image: ${error.message}. This is probably not Max's fault.`);
+      alert(`Error generating image: ${error.message}. ${hfApiKey ? "Please check your Hugging Face API key." : "This is probably not Max's fault."}`);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
+  const handleApiKeyChange = (newApiKey) => {
+    setHfApiKey(newApiKey);
+    localStorage.setItem('hfApiKey', newApiKey);
+    setShowAPIKeySetup(false);
+  };
+
+  const handleApiKeyClear = () => {
+    setHfApiKey(null);
+    localStorage.removeItem('hfApiKey');
+    setShowAPIKeySetup(false);
+  };
 
   const currentModel = models.find(model => model.id === selectedModel);
 
@@ -62,7 +104,9 @@ const ImageGenerator = ({ onLogout }) => {
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
       <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center">AI Image Generator</h2>
-        <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">All of the models. None of the subscriptions.</p>
+        <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">
+          {hfApiKey ? "Using your Hugging Face API key" : "All of the models. None of the subscriptions."}
+        </p>
       </div>
       <div className="p-6 bg-stone-50">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -111,6 +155,13 @@ const ImageGenerator = ({ onLogout }) => {
           >
             {isLoading ? 'Generating...' : 'Generate Image'}
           </button>
+          <button 
+            type="button"
+            onClick={() => setShowAPIKeySetup(true)}
+            className="w-full bg-gray-200 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300 text-sm md:text-base"
+          >
+            {hfApiKey ? 'Change API Key' : 'Set Up API Key'}
+          </button>
         </form>
       </div>
       <div className="bg-stone-100 p-6">
@@ -149,8 +200,15 @@ const ImageGenerator = ({ onLogout }) => {
         }}
         prompt={prompt}
       />
+      <APIKeySetup
+        isOpen={showAPIKeySetup}
+        setIsOpen={setShowAPIKeySetup}
+        onSave={handleApiKeyChange}
+        onClear={handleApiKeyClear}
+        initialApiKey={hfApiKey}
+      />
     </div>
   );
 };
 
-export default ImageGenerator;
+export default FreeImageGenerator;
