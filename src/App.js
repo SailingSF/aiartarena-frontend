@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ReactGA from 'react-ga4';
+import usePageTracking from './components/usePageTracking';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ArenaGenerator from './components/ArenaGenerator';
 import FreeImageGenerator from './components/FreeImageGenerator';
@@ -11,6 +13,10 @@ import AuthModal from './components/AuthModal';
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
 
+  useEffect(() => {
+    ReactGA.initialize('G-EKLE5ZL133'); // Replace with your Measurement ID
+  }, []);
+
   const handleOpenAuthModal = () => {
     setIsAuthModalOpen(true);
   };
@@ -19,6 +25,8 @@ function App() {
     localStorage.removeItem('token');
     console.log('User logged out');
   };
+
+  usePageTracking();
 
   return (
     <BrowserRouter>
