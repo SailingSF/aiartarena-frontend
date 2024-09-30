@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { LandPlot, Sparkles, Image, Grid, LogIn, LogOut } from 'lucide-react';
+import { LandPlot, Sparkles, Image, Grid, LogIn, LogOut, Info } from 'lucide-react';
 
 const Button = ({ children, onClick, className, icon: Icon }) => (
   <button
@@ -46,6 +46,16 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
             </Button>
           </Link>
         </div>
+      </div>
+      <div className='mt-4'>
+        <h3 className="text-xl font-bold mb-6 text-center">What is this?</h3>
+        <div className="mb-4">
+            <Link to="/info">
+              <Button className="bg-gray-500 text-white hover:bg-gray-600" icon={Info}>
+                Information
+              </Button>
+            </Link>
+          </div>
       </div>
               
       <div className="border-t border-gray-200 p-4 mt-6 bg-gray-50 flex space-x-4">

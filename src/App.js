@@ -4,6 +4,7 @@ import ArenaGenerator from './components/ArenaGenerator';
 import FreeImageGenerator from './components/FreeImageGenerator';
 import PremiumGenerator from './components/PremiumGenerator';
 import Gallery from './components/Gallery';
+import Info from './components/Info';
 import Home from './components/Home';
 import AuthModal from './components/AuthModal';
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/generate" element={<FreeImageGenerator />} />
           <Route path="/premium" element={<PremiumGenerator />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/info" element={<Info />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <AuthModal
