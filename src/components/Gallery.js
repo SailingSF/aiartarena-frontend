@@ -64,13 +64,13 @@ const Gallery = () => {
         <LoadingSpinner />
       ) : images.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {images.map((image) => (
-              <div key={image.id} className="relative group">
+              <div key={image.id} className="relative group aspect-w-1 aspect-h-1">
                 <img
                   src={image.thumbnail_url}
                   alt={image.generation_log.prompt}
-                  className="w-full h-48 object-cover cursor-pointer transition duration-300 group-hover:opacity-75"
+                  className="w-full h-full object-cover cursor-pointer transition duration-300 group-hover:opacity-75"
                   onClick={() => handleImageClick(image)}
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
