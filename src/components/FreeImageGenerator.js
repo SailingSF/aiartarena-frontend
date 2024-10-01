@@ -30,6 +30,7 @@ const FreeImageGenerator = ({ onLogout }) => {
   const [hfApiKey, setHfApiKey] = useState(null);
   const [showAPIKeySetup, setShowAPIKeySetup] = useState(false);
   const [improvePrompt, setImprovePrompt] = useState(false);
+  const [improvedPrompt, setImprovedPrompt] = useState(null);  
 
   useEffect(() => {
     const storedApiKey = localStorage.getItem('hfApiKey');
@@ -37,6 +38,13 @@ const FreeImageGenerator = ({ onLogout }) => {
       setHfApiKey(storedApiKey);
     }
   }, []);
+
+  const clearAllPrompts = () => {
+    setPrompt('');
+    setNegativePrompt('');
+    setImprovedPrompt(null);
+    setGeneratedImageUrl(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,11 +84,13 @@ const FreeImageGenerator = ({ onLogout }) => {
         const response = await axios.post(`${API_BASE_URL}/api/generate-image/`, {
           prompt,
           negative_prompt: negativePrompt,
+          improved_prompt: improvedPrompt,
           selected_model: selectedModel,
           improve_prompt: improvePrompt
         });
         imageUrl = response.data.image_url;
         setGeneratedImageUrl(imageUrl);
+        setImprovedPrompt(response.data.improved_prompt);
       }
     } catch (error) {
       console.error("Error generating image:", error);
@@ -152,6 +162,19 @@ const FreeImageGenerator = ({ onLogout }) => {
               />
             </div>
           )}
+          {improvedPrompt && (
+            <div>
+              <label htmlFor="improvedPrompt" className="block text-sm font-bold text-gray-700 mb-1">Improved Prompt (Optional and Final)</label>
+              <textarea
+                id="improvedPrompt"
+                value={improvedPrompt}
+                onChange={(e) => setImprovedPrompt(e.target.value)}
+                placeholder="AI improved prompt for this specific image model, this won't be altered"
+                className="w-full p-2 border-2 border-black rounded-md text-sm"
+                rows={4}
+              />
+          </div>
+          )}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <label htmlFor="improvePrompt" className="text-sm font-medium text-gray-700 mr-1">
@@ -174,13 +197,22 @@ const FreeImageGenerator = ({ onLogout }) => {
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
           </div>
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
-          >
-            {isLoading ? 'Generating...' : 'Generate Image'}
-          </button>
+          <div className="flex space-x-4">
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="flex-1 bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
+            >
+              {isLoading ? 'Generating...' : 'Generate Image'}
+            </button>
+            <button 
+              type="button" 
+              onClick={clearAllPrompts}
+              className="flex-1 bg-gray-300 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-400 transition duration-300 text-sm md:text-base"
+            >
+              New Image
+            </button>
+          </div>
           <button 
             type="button"
             onClick={() => setShowAPIKeySetup(true)}
