@@ -94,7 +94,11 @@ const FreeImageGenerator = ({ onLogout }) => {
       }
     } catch (error) {
       console.error("Error generating image:", error);
-      alert(`Error generating image: ${error.message}. ${hfApiKey ? "Please check your Hugging Face API key." : "This is probably not Max's fault."}`);
+      if (error.response && error.response.status === 504) {
+        alert("The free image generator is taking too long to respond. This might work if you try again in a few seconds. Premium image generator doesn't have this problem.");
+      } else {
+        alert(`Error generating image: ${error.message}. ${hfApiKey ? "Please check your Hugging Face API key." : "This is probably not Max's fault."}`);
+      }
     } finally {
       setIsLoading(false);
     }
