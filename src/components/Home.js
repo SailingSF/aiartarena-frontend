@@ -1,26 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { LandPlot, Sparkles, Image, Grid, LogIn, LogOut, Info } from 'lucide-react';
 
-const Button = ({ children, onClick, className, icon: Icon }) => (
-  <button
-    onClick={onClick}
-    className={`w-full flex items-center justify-center space-x-2 py-4 px-4 rounded-lg font-semibold transition duration-300 ${className}`}
-  >
-    {Icon && <Icon size={20} />}
-    <span>{children}</span>
-  </button>
-);
+const Button = ({ children, onClick, className, icon: Icon, to }) => {
+  const ButtonComponent = to ? Link : motion.button;
+  return (
+    <ButtonComponent
+      to={to}
+      onClick={onClick}
+      className={`w-full flex items-center justify-center space-x-2 py-4 px-4 rounded-lg font-semibold transition-colors duration-300 ${className}`}
+      whileHover={{ scale: 1.025 }}
+      whileTap={{ scale: 0.975 }}
+    >
+      {Icon && <Icon size={20} />}
+      <span>{children}</span>
+    </ButtonComponent>
+  );
+};
 
 const Home = ({ onLogout, onOpenAuthModal }) => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
       <h1 className="text-3xl font-bold mb-6 text-center">🏟️ Welcome to the Arena 🏟️</h1>
       <h3 className="text-xl font-bold mb-6 text-center">An easy way to make AI Images</h3>
-      <div className="space-y-4 py-4">
-        <div className="mb-6">
+      <div className="space-y-4 py-4 px-2">
+        <div className="mb-4">
         <Link to="/arena">
-          <Button className="bg-amber-400 text-black hover:bg-amber-500" icon={LandPlot}>
+          <Button className="bg-amber-400 text-black hover:bg-amber-500 ring-4 ring-yellow-400 ring-opacity-50" icon={LandPlot}>
             THE ARENA
           </Button>
         </Link>
