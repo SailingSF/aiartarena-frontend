@@ -181,7 +181,7 @@ const FreeImageGenerator = ({ onLogout }) => {
           )}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <label htmlFor="improvePrompt" className="text-sm font-medium text-gray-700 mr-1">
+              <label htmlFor="improvePrompt" className="text-md font-medium text-gray-700 mr-1">
                 Pimp My Prompt
               </label>
               <Tooltip text="Uses AI to improve your prompt before generating the image">
