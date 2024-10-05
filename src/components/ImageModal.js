@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import UpvoteButton from './UpvoteButton';
 
 const ImageModal = ({ image, onClose }) => {
   const modalRef = useRef();
+  const [totalVotes, setTotalVotes] = useState(image.total_votes);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -17,14 +18,20 @@ const ImageModal = ({ image, onClose }) => {
     };
   }, [onClose]);
 
+  const handleVoteUpdate = (newVotes) => {
+    setTotalVotes(newVotes);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div ref={modalRef} className="bg-white rounded-lg p-4 max-w-md w-full max-h-[90vh] overflow-y-auto">
         <img src={image.url} alt={image.generation_log.prompt} className="w-full h-auto mb-4" />
         <div className="flex justify-between items-center mb-4">
-          <p className="text-lg font-semibold">Total Votes: {image.total_votes}</p>
+          <p className="text-lg font-semibold">Total Votes: {totalVotes}</p>
           <UpvoteButton
             imageId={image.id}
+            initialVotes={totalVotes}
+            onVoteUpdate={handleVoteUpdate}
           />
         </div>
         <p className="text-lg font-semibold mb-2">Prompt:</p>

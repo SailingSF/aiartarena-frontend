@@ -4,8 +4,9 @@ import { ThumbsUp } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-const UpvoteButton = ({ imageId }) => {
+const UpvoteButton = ({ imageId, initialVotes, onVoteUpdate }) => {
   const [hasVoted, setHasVoted] = useState(false);
+  const [votes, setVotes] = useState(initialVotes);
 
   const handleUpvote = async () => {
     if (hasVoted) {
@@ -28,6 +29,9 @@ const UpvoteButton = ({ imageId }) => {
       
       if (response.status === 200) {
         setHasVoted(true);
+        const newVotes = votes + 1;
+        setVotes(newVotes);
+        onVoteUpdate(newVotes);
         console.log('Upvote successful:', response.data.message);
       }
     } catch (error) {
