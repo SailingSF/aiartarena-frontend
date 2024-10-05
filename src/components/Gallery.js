@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ImageModal from './ImageModal';
 import LoadingSpinner from './LoadingSpinner';
+import UpvoteButton from './UpvoteButton';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -75,11 +76,12 @@ const Gallery = () => {
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
                   <button 
-                    className="bg-black bg-opacity-50 text-white px-3 py-1 rounded"
+                    className="bg-black bg-opacity-50 text-white px-3 py-1 rounded mr-2"
                     onClick={() => handleImageClick(image)}
                   >
                     View Details
                   </button>
+                  <UpvoteButton imageId={image.id} />
                 </div>
               </div>
             ))}
