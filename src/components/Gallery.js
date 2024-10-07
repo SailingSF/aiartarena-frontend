@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ImageModal from './ImageModal';
+import InPageNavbar from './InPageNavbar';
 import LoadingSpinner from './LoadingSpinner';
 import UpvoteButton from './UpvoteButton';
 
@@ -54,7 +55,8 @@ const Gallery = () => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl p-6">
-      <div className="flex justify-between items-center mb-4">
+      <InPageNavbar pageColor="bg-green-500" /> 
+      <div className="flex justify-between items-center mb-4 mt-4">
         <h1 className="text-3xl font-bold">Image Gallery</h1>
         <Link to="/" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300">
           Home

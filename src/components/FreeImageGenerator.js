@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import NSFWModal from './NSFWModal';
 import APIKeySetup from './APIKeySetup';
+import InPageNavbar from './InPageNavbar';
 import axios from 'axios';
 import { HfInference } from '@huggingface/inference';
 import { HelpCircle } from 'lucide-react';
@@ -120,7 +120,8 @@ const FreeImageGenerator = ({ onLogout }) => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 md:p-6">
+      <InPageNavbar pageColor="bg-blue-500" /> 
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center">AI Image Generator</h2>
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">
           {hfApiKey ? "Using your Hugging Face API key" : "All of the models. None of the subscriptions."}
@@ -241,14 +242,6 @@ const FreeImageGenerator = ({ onLogout }) => {
             <p className="text-sm font-bold">Your generated image will appear here</p>
           </div>
         )}
-      </div>
-      <div className="bg-stone-50 p-4 border-t-2 border-black flex justify-center">
-        <Link
-          to="/"
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300"
-        >
-          Home
-        </Link>
       </div>
       <NSFWModal
         isOpen={showNSFWWarning}

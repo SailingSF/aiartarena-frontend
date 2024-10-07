@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import InPageNavbar from './InPageNavbar';
 
 const Info = () => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">🏟️ About The Arena 🏟️</h1>
+      <InPageNavbar pageColor="bg-gray-500" /> 
+      <h1 className="text-3xl font-bold mb-6 mt-4 text-center">🏟️ About The Arena 🏟️</h1>
       
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">What is The Arena?</h2>

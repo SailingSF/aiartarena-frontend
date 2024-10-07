@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import InPageNavbar from './InPageNavbar';
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -80,7 +81,8 @@ const ArenaGenerator = () => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
-      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-4 md:p-6">
+      <InPageNavbar pageColor="bg-amber-400" /> 
+      <div className="bg-gradient-to-r from-amber-400 to-yellow-600 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center">AI Image Arena</h2>
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Compare AI models with one prompt</p>
       </div>
