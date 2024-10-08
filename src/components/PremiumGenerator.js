@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import InPageNavbar from './InPageNavbar';
 import NSFWModal from './NSFWModal';
 import axios from 'axios';
@@ -22,6 +22,8 @@ const PremiumGenerator = ({ onLogout }) => {
   const [improvedPrompt, setImprovedPrompt] = useState(null);  
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const clearAllPrompts = () => {
     setPrompt('');
@@ -31,7 +33,15 @@ const PremiumGenerator = ({ onLogout }) => {
   };
 
   const handleSubmit = async (e) => {
-   e.preventDefault();
+    e.preventDefault();
+    setErrorMessage('');
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      setErrorMessage('Please log in to use this feature.');
+      return;
+    }
+
     const currentModel = models.find(model => model.id === selectedModel);
     
     if (currentModel.nsfw) {
@@ -53,7 +63,7 @@ const PremiumGenerator = ({ onLogout }) => {
       }
 
       const config = {
-        headers: { Authorization: `Token ${token}` }  // Note the change from 'Bearer' to 'Token'
+        headers: { Authorization: `Token ${token}` }
       };
       const response = await axios.post(`${API_BASE_URL}/api/generate-image-premium/`, {
         prompt,
@@ -69,12 +79,14 @@ const PremiumGenerator = ({ onLogout }) => {
 
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Token is invalid or expired
         localStorage.removeItem('token');
-        // You might want to redirect to login page or update app state here
+        navigate('/login');
+      } else if (error.response && error.response.status === 403) {
+        setErrorMessage("You don't have enough credits or are not at the right tier for this request.");
+      } else {
+        console.error("Error generating image:", error);
+        setErrorMessage(`Error generating image: ${error.message}. This is probably not Max's fault.`);
       }
-      console.error("Error generating image:", error);
-      alert(`Error generating image: ${error.message}. This is probably not Max's fault.`);
     } finally {
       setIsLoading(false);
     }
@@ -82,6 +94,7 @@ const PremiumGenerator = ({ onLogout }) => {
   
 
   const currentModel = models.find(model => model.id === selectedModel);
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
@@ -146,10 +159,10 @@ const PremiumGenerator = ({ onLogout }) => {
           <div className="flex space-x-4">
             <button 
               type="submit" 
-              disabled={isLoading}
+              disabled={isLoading || !isLoggedIn}
               className="flex-1 bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
             >
-              {isLoading ? 'Generating...' : 'Generate Image'}
+              {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Image' : 'Login to generate images')}
             </button>
             <button 
               type="button" 
@@ -160,6 +173,11 @@ const PremiumGenerator = ({ onLogout }) => {
             </button>
           </div>
         </form>
+        {errorMessage && (
+          <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+            {errorMessage}
+          </div>
+        )}
       </div>
       <div className="bg-stone-100 p-6">
         {generatedImageUrl ? (

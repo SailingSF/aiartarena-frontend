@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -10,10 +10,18 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
-  
+    const [successMessage, setSuccessMessage] = useState('');
+
+    useEffect(() => {
+      // Clear messages when switching between login and register
+      setError('');
+      setSuccessMessage('');
+    }, [isLogin]);
+
     const handleSubmit = async (e) => {
       e.preventDefault();
       setError('');
+      setSuccessMessage('');
   
       if (!isLogin && password !== confirmPassword) {
         setError('Passwords do not match');
@@ -26,17 +34,38 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
           ? { email, password }
           : { email, password, userdisplay_name: username };
         
-        const response = await axios.post(`${API_BASE_URL}`+endpoint, data);
+        const response = await axios.post(`${API_BASE_URL}${endpoint}`, data);
         
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
-          onAuthenticate(true);
-          onClose();
+          setSuccessMessage(isLogin ? 'Login successful!' : 'Registration successful!');
+          setTimeout(() => {
+            onAuthenticate(true);
+            onClose();
+          }, 1500); // Close the modal after 1.5 seconds
         } else {
-          setError('Authentication failed');
+          setError('Authentication failed. Please try again.');
         }
       } catch (error) {
-        setError(error.response?.data?.message || 'An error occurred');
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          if (error.response.status === 400) {
+            setError(error.response.data.message || 'Invalid input. Please check your details.');
+          } else if (error.response.status === 401) {
+            setError('Invalid credentials. Please try again.');
+          } else if (error.response.status === 409) {
+            setError('This email is already registered. Please login or use a different email.');
+          } else {
+            setError('An unexpected error occurred. Please try again later.');
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          setError('No response from server. Please check your internet connection and try again.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          setError('An unexpected error occurred. Please try again later.');
+        }
       }
     };
   
@@ -106,6 +135,7 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
           <form onSubmit={handleSubmit}>
             {isLogin ? renderLoginForm() : renderRegisterForm()}
             {error && <p className="text-red-500 mb-4">{error}</p>}
+            {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
             <button type="submit" className="w-full bg-black text-white p-2 rounded hover:bg-blue-600">
               {isLogin ? 'Login' : 'Register'}
             </button>
@@ -116,6 +146,7 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
               onClick={() => {
                 setIsLogin(!isLogin);
                 setError('');
+                setSuccessMessage('');
                 setEmail('');
                 setPassword('');
                 setConfirmPassword('');

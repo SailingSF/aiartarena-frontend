@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import InPageNavbar from './InPageNavbar';
 import axios from 'axios';
 
@@ -39,18 +39,22 @@ const ArenaGenerator = () => {
   const [generatedImages, setGeneratedImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      setErrorMessage('Please log in to use this feature.');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      const token = localStorage.getItem('token');
-    
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       const config = {
         headers: { Authorization: `Token ${token}` }
       };
@@ -67,17 +71,26 @@ const ArenaGenerator = () => {
           prompt: result.prompt,
           model: result.model
         },
-        created_at: new Date().toISOString() // As we don't have this in the original data, we're using the current time
+        created_at: new Date().toISOString()
       }));
 
       setGeneratedImages(reshapedResults);
     } catch (error) {
-      console.error("Error generating images:", error);
-      alert(`Error generating images: ${error.message}`);
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      } else if (error.response && error.response.status === 403) {
+        setErrorMessage("You don't have enough credits or are not at the right tier for this request.");
+      } else {
+        console.error("Error generating images:", error);
+        setErrorMessage(`Error generating images: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
@@ -102,12 +115,17 @@ const ArenaGenerator = () => {
           </div>
           <button 
             type="submit" 
-            disabled={isLoading}
+            disabled={isLoading || !isLoggedIn}
             className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
           >
-            {isLoading ? 'Generating...' : 'Generate Images'}
+            {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Images' : 'Login to generate images')}
           </button>
         </form>
+        {errorMessage && (
+          <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+            {errorMessage}
+          </div>
+        )}
       </div>
       <div className="bg-stone-100 p-6">
         {generatedImages.length > 0 ? (
