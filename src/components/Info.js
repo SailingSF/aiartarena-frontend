@@ -18,7 +18,7 @@ const Info = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Our Features</h2>
         <ul className="list-disc list-inside space-y-2">
-          <li>Free Image Generator: Create basic AI images at absolutely no cost.</li>
+          <li>Free Image Generator: Create basic AI images at absolutely no cost and optionally use AI to enhance your prompt with "Pimp My Prompt".</li>
           <li>Premium Image Generator: Access advanced features and higher quality outputs using more premium models and with much faster generation.</li>
           <li>Gallery: Explore and get inspired by other users' creations and see how the models were prompted to create that image.</li>
           <li>The Arena: Generate multiple images from different models with the same prompt to compare albilities and prompt engineering.</li>
@@ -42,7 +42,7 @@ const Info = () => {
           </div>
           <div>
             <h3 className="font-semibold">Q: Who made this?</h3>
-            <p>A: Max did. <a className='text-blue-700' href='https://linkedin.com/in/maxabouchar'>please hire him</a>. He likes to build things.</p>
+            <p>A: Max did. <a className='text-blue-700' href='https://linkedin.com/in/maxabouchar'>hire him</a>.</p>
           </div>
         </div>
       </section>
