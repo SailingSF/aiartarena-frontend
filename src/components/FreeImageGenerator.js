@@ -31,6 +31,7 @@ const FreeImageGenerator = ({ onLogout }) => {
   const [showAPIKeySetup, setShowAPIKeySetup] = useState(false);
   const [improvePrompt, setImprovePrompt] = useState(false);
   const [improvedPrompt, setImprovedPrompt] = useState(null);  
+  const [showTutorial, setShowTutorial] = useState(true);
 
   useEffect(() => {
     const storedApiKey = localStorage.getItem('hfApiKey');
@@ -128,6 +129,23 @@ const FreeImageGenerator = ({ onLogout }) => {
         </p>
       </div>
       <div className="p-6 bg-stone-50">
+        {showTutorial && (
+          <div className="mb-4 p-4 bg-blue-100 rounded-md">
+            <h3 className="font-bold mb-2">How to use the AI Image Generator:</h3>
+            <ol className="list-decimal list-inside">
+              <li>Select a model from the dropdown menu</li>
+              <li>Enter a detailed description of the image you want to generate</li>
+              <li>Optionally, enable "Pimp My Prompt" for AI-enhanced prompts</li>
+              <li>Click "Generate Image" and wait for your creation!</li>
+            </ol>
+            <button 
+              onClick={() => setShowTutorial(false)} 
+              className="mt-2 text-sm text-blue-600 hover:underline"
+            >
+              Got it, don't show this again
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="model" className="block text-sm font-bold text-gray-700 mb-1">Select Model</label>
@@ -143,7 +161,7 @@ const FreeImageGenerator = ({ onLogout }) => {
             </select>
           </div>
           <div>
-            <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
+            <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Prompt</label>
             <textarea
               id="prompt"
               value={prompt}
