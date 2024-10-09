@@ -32,6 +32,7 @@ const FreeImageGenerator = ({ onLogout }) => {
   const [improvePrompt, setImprovePrompt] = useState(false);
   const [improvedPrompt, setImprovedPrompt] = useState(null);  
   const [showTutorial, setShowTutorial] = useState(true);
+  const [isLoadingRandomPrompt, setIsLoadingRandomPrompt] = useState(false);
 
   useEffect(() => {
     const storedApiKey = localStorage.getItem('hfApiKey');
@@ -119,6 +120,19 @@ const FreeImageGenerator = ({ onLogout }) => {
 
   const currentModel = models.find(model => model.id === selectedModel);
 
+  const generateRandomPrompt = async () => {
+    setIsLoadingRandomPrompt(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/random-prompt/`);
+      setPrompt(response.data.prompt);
+    } catch (error) {
+      console.error("Error generating random prompt:", error);
+      alert("Failed to generate a random prompt. Please try again.");
+    } finally {
+      setIsLoadingRandomPrompt(false);
+    }
+  };
+
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
       <InPageNavbar pageColor="bg-blue-500" /> 
@@ -162,15 +176,25 @@ const FreeImageGenerator = ({ onLogout }) => {
           </div>
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Prompt</label>
-            <textarea
-              id="prompt"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Describe the image"
-              required
-              className="w-full p-2 border-2 border-black rounded-md text-sm"
-              rows={3} 
-            />
+            <div className="flex space-x-2">
+              <textarea
+                id="prompt"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Describe the image"
+                required
+                className="flex-grow p-2 border-2 border-black rounded-md text-sm"
+                rows={3}
+              />
+              <button
+                type="button"
+                onClick={generateRandomPrompt}
+                disabled={isLoadingRandomPrompt}
+                className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50 text-sm"
+              >
+                {isLoadingRandomPrompt ? 'Loading...' : 'Random Prompt'}
+              </button>
+            </div>
           </div>
           {currentModel.supportsNegativePrompt && (
             <div>
