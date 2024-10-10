@@ -34,7 +34,7 @@ const ImageModal = ({ image, onClose }) => {
   );
 };
 
-const ArenaGenerator = () => {
+const ArenaGenerator = ({ openAuthModal }) => {
   const [prompt, setPrompt] = useState('');
   const [generatedImages, setGeneratedImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +48,7 @@ const ArenaGenerator = () => {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      setErrorMessage('Please log in to use this feature.');
+      openAuthModal();
       return;
     }
 
@@ -92,6 +92,14 @@ const ArenaGenerator = () => {
 
   const isLoggedIn = !!localStorage.getItem('token');
 
+  const handleGenerateClick = () => {
+    if (!isLoggedIn) {
+      openAuthModal();
+    } else {
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
       <InPageNavbar pageColor="bg-amber-400" /> 
@@ -100,7 +108,7 @@ const ArenaGenerator = () => {
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Compare AI models with one prompt</p>
       </div>
       <div className="p-6 bg-stone-50">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
             <textarea
@@ -114,11 +122,15 @@ const ArenaGenerator = () => {
             />
           </div>
           <button 
-            type="submit" 
-            disabled={isLoading || !isLoggedIn}
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
+            type="button" 
+            onClick={handleGenerateClick}
+            className={`w-full font-bold py-2 px-4 rounded-md transition duration-300 text-sm md:text-base ${
+              isLoggedIn 
+                ? 'bg-black text-white hover:bg-gray-800' 
+                : 'bg-gray-300 text-gray-600 hover:bg-gray-400'
+            }`}
           >
-            {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Images' : 'Login to generate images')}
+            {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Images' : 'Login to Generate Images')}
           </button>
         </form>
         {errorMessage && (

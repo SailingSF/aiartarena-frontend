@@ -14,7 +14,7 @@ const models = [
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
-const PremiumGenerator = ({ onLogout }) => {
+const PremiumGenerator = ({ openAuthModal }) => {
   const [prompt, setPrompt] = useState('');
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState(models[0].id);
@@ -38,7 +38,7 @@ const PremiumGenerator = ({ onLogout }) => {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      setErrorMessage('Please log in to use this feature.');
+      openAuthModal();
       return;
     }
 
@@ -59,7 +59,8 @@ const PremiumGenerator = ({ onLogout }) => {
       const token = localStorage.getItem('token');
     
       if (!token) {
-        throw new Error('No authentication token found');
+        openAuthModal();
+        return;
       }
 
       const config = {
@@ -96,6 +97,14 @@ const PremiumGenerator = ({ onLogout }) => {
   const currentModel = models.find(model => model.id === selectedModel);
   const isLoggedIn = !!localStorage.getItem('token');
 
+  const handleGenerateClick = () => {
+    if (!isLoggedIn) {
+      openAuthModal();
+    } else {
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
       <InPageNavbar pageColor="bg-purple-500" /> 
@@ -104,7 +113,7 @@ const PremiumGenerator = ({ onLogout }) => {
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Good stuff and quicker</p>
       </div>
       <div className="p-6 bg-stone-50">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           <div>
             <label htmlFor="model" className="block text-sm font-bold text-gray-700 mb-1">Select Model</label>
             <select
@@ -158,11 +167,15 @@ const PremiumGenerator = ({ onLogout }) => {
           )}
           <div className="flex space-x-4">
             <button 
-              type="submit" 
-              disabled={isLoading || !isLoggedIn}
-              className="flex-1 bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
+              type="button"
+              onClick={handleGenerateClick}
+              className={`flex-1 font-bold py-2 px-4 rounded-md transition duration-300 text-sm md:text-base ${
+                isLoggedIn 
+                  ? 'bg-black text-white hover:bg-gray-800' 
+                  : 'bg-gray-300 text-gray-600 hover:bg-gray-400'
+              }`}
             >
-              {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Image' : 'Login to generate images')}
+              {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Image' : 'Login to Generate Image')}
             </button>
             <button 
               type="button" 
