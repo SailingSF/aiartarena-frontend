@@ -223,8 +223,8 @@ const FreeImageGenerator = ({ onLogout }) => {
           </div>
           )}
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <label htmlFor="improvePrompt" className="text-md font-medium text-gray-700 mr-1">
+            <div className="flex items-center space-x-2">
+              <label htmlFor="improvePrompt" className="text-md font-medium text-gray-700">
                 Pimp My Prompt
               </label>
               <Tooltip text="Uses AI to improve your prompt before generating the image">
@@ -233,16 +233,16 @@ const FreeImageGenerator = ({ onLogout }) => {
                   className="text-gray-500 cursor-help"
                 />
               </Tooltip>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={improvePrompt}
+                  onChange={() => setImprovePrompt(!improvePrompt)}
+                />
+                <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-700 peer-checked:bg-purple-600"></div>
+              </label>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={improvePrompt}
-                onChange={() => setImprovePrompt(!improvePrompt)}
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-700 peer-checked:bg-purple-600"></div>
-            </label>
           </div>
           <div className="flex space-x-4">
             <button 
