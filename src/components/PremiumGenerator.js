@@ -83,10 +83,10 @@ const PremiumGenerator = ({ openAuthModal }) => {
         localStorage.removeItem('token');
         navigate('/login');
       } else if (error.response && error.response.status === 403) {
-        setErrorMessage("You don't have enough credits or are not at the right tier for this request.");
+        setErrorMessage("You don't have enough credits or are not at the right membership tier for this request.");
       } else {
         console.error("Error generating image:", error);
-        setErrorMessage(`Error generating image: ${error.message}. This is probably not Max's fault.`);
+        setErrorMessage(`Error generating image: ${error.message}."This is probably not Max's fault. I would try again a few times before giving up. But I'm built different, so do you."`);
       }
     } finally {
       setIsLoading(false);
