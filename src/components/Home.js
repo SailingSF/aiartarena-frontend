@@ -20,6 +20,11 @@ const Button = ({ children, onClick, className, icon: Icon, to }) => {
 };
 
 const Home = ({ onLogout, onOpenAuthModal }) => {
+  const handleOpenAuthModal = () => {
+    // Call onOpenAuthModal without any message
+    onOpenAuthModal();
+  };
+
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
       <h1 className="text-3xl font-bold mb-6 text-center">🏟️ Welcome to the Arena 🏟️</h1>
@@ -66,7 +71,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
       </div>
               
       <div className="border-t border-gray-200 p-4 mt-6 bg-gray-50 flex space-x-4">
-        <Button onClick={onOpenAuthModal} className="bg-gray-200 text-gray-800 hover:bg-gray-300 flex-1" icon={LogIn}>
+        <Button onClick={handleOpenAuthModal} className="bg-gray-200 text-gray-800 hover:bg-gray-300 flex-1" icon={LogIn}>
           Login
         </Button>
         <Button onClick={onLogout} className="bg-red-500 text-white hover:bg-red-600 flex-1" icon={LogOut}>
