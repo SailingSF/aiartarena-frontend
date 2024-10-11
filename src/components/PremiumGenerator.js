@@ -32,8 +32,19 @@ const PremiumGenerator = ({ openAuthModal }) => {
     setGeneratedImageUrl(null);
   };
 
+  const handleGenerateClick = () => {
+    if (!isLoggedIn) {
+      openAuthModal();
+      setErrorMessage("Please log in to generate images.");
+    } else {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     setErrorMessage('');
     const token = localStorage.getItem('token');
     
@@ -96,14 +107,6 @@ const PremiumGenerator = ({ openAuthModal }) => {
 
   const currentModel = models.find(model => model.id === selectedModel);
   const isLoggedIn = !!localStorage.getItem('token');
-
-  const handleGenerateClick = () => {
-    if (!isLoggedIn) {
-      openAuthModal();
-    } else {
-      handleSubmit();
-    }
-  };
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
@@ -175,7 +178,7 @@ const PremiumGenerator = ({ openAuthModal }) => {
                   : 'bg-gray-300 text-gray-600 hover:bg-gray-400'
               }`}
             >
-              {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Image' : 'Login to Generate Image')}
+              {isLoading ? 'Generating...' : 'Generate Image'}
             </button>
             <button 
               type="button" 

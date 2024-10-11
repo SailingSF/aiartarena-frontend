@@ -43,7 +43,9 @@ const ArenaGenerator = ({ openAuthModal }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     setErrorMessage('');
     const token = localStorage.getItem('token');
     
@@ -108,7 +110,7 @@ const ArenaGenerator = ({ openAuthModal }) => {
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Compare AI models with one prompt</p>
       </div>
       <div className="p-6 bg-stone-50">
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
             <textarea
@@ -122,8 +124,7 @@ const ArenaGenerator = ({ openAuthModal }) => {
             />
           </div>
           <button 
-            type="button" 
-            onClick={handleGenerateClick}
+            type="submit" 
             className={`w-full font-bold py-2 px-4 rounded-md transition duration-300 text-sm md:text-base ${
               isLoggedIn 
                 ? 'bg-black text-white hover:bg-gray-800' 
