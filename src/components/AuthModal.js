@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
-const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
+const AuthModal = ({ isOpen, onClose, onAuthenticate, message }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -131,7 +131,8 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate }) => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-xl w-96">
-          <h2 className="text-2xl font-bold mb-4">{isLogin ? 'Login' : 'Register'}</h2>
+          <h2 className="text-2xl font-bold mb-2">{isLogin ? 'Login' : 'Register'}</h2>
+          {message && <p className="text-blue-500 mb-4">{message}</p>}
           <form onSubmit={handleSubmit}>
             {isLogin ? renderLoginForm() : renderRegisterForm()}
             {error && <p className="text-red-500 mb-4">{error}</p>}

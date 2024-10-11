@@ -23,7 +23,6 @@ const PremiumGenerator = ({ openAuthModal }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
 
   const clearAllPrompts = () => {
     setPrompt('');
@@ -34,8 +33,7 @@ const PremiumGenerator = ({ openAuthModal }) => {
 
   const handleGenerateClick = () => {
     if (!isLoggedIn) {
-      openAuthModal();
-      setErrorMessage("Please log in to generate images.");
+      openAuthModal("Please log in to use the Premium Image Generator.");
     } else {
       handleSubmit();
     }
@@ -45,7 +43,6 @@ const PremiumGenerator = ({ openAuthModal }) => {
     if (e) {
       e.preventDefault();
     }
-    setErrorMessage('');
     const token = localStorage.getItem('token');
     
     if (!token) {
@@ -94,10 +91,10 @@ const PremiumGenerator = ({ openAuthModal }) => {
         localStorage.removeItem('token');
         navigate('/login');
       } else if (error.response && error.response.status === 403) {
-        setErrorMessage("You don't have enough credits or are not at the right membership tier for this request.");
+        openAuthModal("You don't have enough credits or are not at the right membership tier for this request.");
       } else {
         console.error("Error generating image:", error);
-        setErrorMessage(`Error generating image: ${error.message}."This is probably not Max's fault. I would try again a few times before giving up. But I'm built different, so do you."`);
+        openAuthModal(`Error generating image: ${error.message}. This is probably not Max's fault. I would try again a few times before giving up. But I'm built different, so do you.`);
       }
     } finally {
       setIsLoading(false);
@@ -189,11 +186,6 @@ const PremiumGenerator = ({ openAuthModal }) => {
             </button>
           </div>
         </form>
-        {errorMessage && (
-          <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
-            {errorMessage}
-          </div>
-        )}
       </div>
       <div className="bg-stone-100 p-6">
         {generatedImageUrl ? (

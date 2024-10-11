@@ -40,17 +40,15 @@ const ArenaGenerator = ({ openAuthModal }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     if (e) {
       e.preventDefault();
     }
-    setErrorMessage('');
     const token = localStorage.getItem('token');
     
     if (!token) {
-      openAuthModal();
+      openAuthModal("Please log in to generate images in the Arena.");
       return;
     }
 
@@ -82,10 +80,10 @@ const ArenaGenerator = ({ openAuthModal }) => {
         localStorage.removeItem('token');
         navigate('/login');
       } else if (error.response && error.response.status === 403) {
-        setErrorMessage("You don't have enough credits or are not at the right tier for this request.");
+        openAuthModal("You don't have enough credits or are not at the right tier for this request.");
       } else {
         console.error("Error generating images:", error);
-        setErrorMessage(`Error generating images: ${error.message}`);
+        openAuthModal(`Error generating images: ${error.message}`);
       }
     } finally {
       setIsLoading(false);
@@ -96,7 +94,7 @@ const ArenaGenerator = ({ openAuthModal }) => {
 
   const handleGenerateClick = () => {
     if (!isLoggedIn) {
-      openAuthModal();
+      openAuthModal("Please log in to generate images in the Arena.");
     } else {
       handleSubmit();
     }
@@ -110,7 +108,7 @@ const ArenaGenerator = ({ openAuthModal }) => {
         <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Compare AI models with one prompt</p>
       </div>
       <div className="p-6 bg-stone-50">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
             <textarea
@@ -124,7 +122,8 @@ const ArenaGenerator = ({ openAuthModal }) => {
             />
           </div>
           <button 
-            type="submit" 
+            type="button" 
+            onClick={handleGenerateClick}
             className={`w-full font-bold py-2 px-4 rounded-md transition duration-300 text-sm md:text-base ${
               isLoggedIn 
                 ? 'bg-black text-white hover:bg-gray-800' 
@@ -134,11 +133,6 @@ const ArenaGenerator = ({ openAuthModal }) => {
             {isLoading ? 'Generating...' : (isLoggedIn ? 'Generate Images' : 'Login to Generate Images')}
           </button>
         </form>
-        {errorMessage && (
-          <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
-            {errorMessage}
-          </div>
-        )}
       </div>
       <div className="bg-stone-100 p-6">
         {generatedImages.length > 0 ? (
