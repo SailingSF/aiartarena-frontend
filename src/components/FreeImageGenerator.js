@@ -9,7 +9,7 @@ import Tooltip from './Tooltip';
 
 const models = [
   { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false },
-  { id: "stabilityai/stable-diffusion-2", name: "Stable Diffusion 2 (Ok + Slow)", supportsNegativePrompt: true },
+  { id: "stabilityai/stable-diffusion-2-1", name: "Stable Diffusion 2.1 (Ok + Slow)", supportsNegativePrompt: true },
   { id: "CompVis/stable-diffusion-v1-4", name: "Stable Diffusion 1.4 (Ok + reliable)", supportsNegativePrompt: true },
   { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false },
   { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "Stable Diffusion XL Base 1.0 (Good + Slow)", supportsNegativePrompt: true },
