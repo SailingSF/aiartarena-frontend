@@ -38,6 +38,7 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate, message }) => {
         
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
+          localStorage.setItem('credits', response.data.user.credits);
           setSuccessMessage(isLogin ? 'Login successful!' : 'Registration successful!');
           setTimeout(() => {
             onAuthenticate(true);
