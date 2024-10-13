@@ -4,18 +4,17 @@ import APIKeySetup from './APIKeySetup';
 import InPageNavbar from './InPageNavbar';
 import axios from 'axios';
 import { HfInference } from '@huggingface/inference';
-import { HelpCircle } from 'lucide-react';
 import Tooltip from './Tooltip';
 
 const models = [
-  { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false },
-  { id: "stabilityai/stable-diffusion-2-1", name: "Stable Diffusion 2.1 (Ok + Slow)", supportsNegativePrompt: true },
-  { id: "CompVis/stable-diffusion-v1-4", name: "Stable Diffusion 1.4 (Ok + reliable)", supportsNegativePrompt: true },
-  { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false },
-  { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "Stable Diffusion XL Base 1.0 (Good + Slow)", supportsNegativePrompt: true },
-  { id: "Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur", name: "FLUX.1 LoRA AntiBlur (Great for realistic)", supportsNegativePrompt: false },
-  { id: "XLabs-AI/flux-RealismLora", name: "Flux Realism (Great for realistic portraits)", supportsNegativePrompt: false },
-  { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true }
+  { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false, speed: 'fast' },
+  { id: "stabilityai/stable-diffusion-2-1", name: "Stable Diffusion 2.1 (Ok + Slow)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "CompVis/stable-diffusion-v1-4", name: "Stable Diffusion 1.4 (Ok + reliable)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false, speed: 'slow' },
+  { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "Stable Diffusion XL Base 1.0 (Good + Slow)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur", name: "FLUX.1 LoRA AntiBlur (Great for realistic)", supportsNegativePrompt: false, speed: 'slow' },
+  { id: "XLabs-AI/flux-RealismLora", name: "Flux Realism (Great for realistic portraits)", supportsNegativePrompt: false, speed: 'slow' },
+  { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true, speed: 'slow' }
 ];
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -160,7 +159,7 @@ const FreeImageGenerator = ({ onLogout }) => {
             </button>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="model" className="block text-sm font-bold text-gray-700 mb-1">Select Model</label>
             <select
@@ -170,30 +169,52 @@ const FreeImageGenerator = ({ onLogout }) => {
               className="w-full p-2 border-2 border-black rounded-md text-sm"
             >
               {models.map((model) => (
-                <option key={model.id} value={model.id}>{model.name}</option>
+                <option key={model.id} value={model.id}>
+                  {model.name} {model.speed === 'fast' ? '⚡' : '🐢'}
+                </option>
               ))}
             </select>
           </div>
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Prompt</label>
-            <div className="flex space-x-2">
+            <div className="relative">
               <textarea
                 id="prompt"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe the image"
                 required
-                className="flex-grow p-2 border-2 border-black rounded-md text-sm"
+                className="w-full p-2 border-2 border-black rounded-md text-sm"
                 rows={3}
               />
+            </div>
+            <div className="mt-4 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <button
                 type="button"
                 onClick={generateRandomPrompt}
                 disabled={isLoadingRandomPrompt}
-                className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50 text-sm"
+                className="w-full sm:w-auto bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium py-2 px-4 rounded-md transition duration-300 text-sm flex items-center justify-center space-x-2"
               >
-                {isLoadingRandomPrompt ? 'Loading...' : 'Random Prompt'}
+                <span role="img" aria-label="dice" className="text-xl">🎲</span>
+                <span>{isLoadingRandomPrompt ? 'Loading...' : 'Random Prompt'}</span>
               </button>
+              <div className="flex items-center space-x-2">
+                <Tooltip text="Enhance your prompt with AI, this will take your original prompt and make it better.">
+                  <label htmlFor="improvePrompt" className="text-sm font-medium text-gray-700 flex items-center space-x-1 cursor-pointer">
+                    <span role="img" aria-label="magic wand" className="text-xl">🪄</span>
+                    <span>Pimp My Prompt</span>
+                  </label>
+                </Tooltip>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={improvePrompt}
+                    onChange={() => setImprovePrompt(!improvePrompt)}
+                  />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-700 peer-checked:bg-purple-600"></div>
+                </label>
+              </div>
             </div>
           </div>
           {currentModel.supportsNegativePrompt && (
@@ -222,40 +243,26 @@ const FreeImageGenerator = ({ onLogout }) => {
               />
           </div>
           )}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <label htmlFor="improvePrompt" className="text-md font-medium text-gray-700">
-                Pimp My Prompt
-              </label>
-              <Tooltip text="Uses AI to improve your prompt before generating the image">
-                <HelpCircle 
-                  size={16}
-                  className="text-gray-500 cursor-help"
-                />
-              </Tooltip>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={improvePrompt}
-                  onChange={() => setImprovePrompt(!improvePrompt)}
-                />
-                <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-700 peer-checked:bg-purple-600"></div>
-              </label>
-            </div>
-          </div>
           <div className="flex space-x-4">
             <button 
               type="submit" 
               disabled={isLoading}
-              className="flex-1 bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 disabled:opacity-50 text-sm md:text-base"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-3 px-6 rounded-md hover:from-blue-600 hover:to-blue-700 transition duration-300 disabled:opacity-50 text-sm md:text-base shadow-md"
             >
-              {isLoading ? 'Generating...' : 'Generate Image'}
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Generating...
+                </span>
+              ) : 'Generate Image'}
             </button>
             <button 
               type="button" 
               onClick={clearAllPrompts}
-              className="flex-1 bg-gray-300 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-400 transition duration-300 text-sm md:text-base"
+              className="flex-1 bg-gray-200 text-black font-bold py-3 px-6 rounded-md hover:bg-gray-300 transition duration-300 text-sm md:text-base"
             >
               New Image
             </button>
