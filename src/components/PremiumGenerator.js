@@ -24,6 +24,7 @@ const PremiumGenerator = ({ openAuthModal }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState(false);
   const navigate = useNavigate();
+  const [isLoadingRandomPrompt, setIsLoadingRandomPrompt] = useState(false);
 
   const clearAllPrompts = () => {
     setPrompt('');
@@ -101,7 +102,19 @@ const PremiumGenerator = ({ openAuthModal }) => {
       setIsLoading(false);
     }
   };
-  
+
+  const generateRandomPrompt = async () => {
+    setIsLoadingRandomPrompt(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/random-prompt/`);
+      setPrompt(response.data.prompt);
+    } catch (error) {
+      console.error("Error generating random prompt:", error);
+      alert("Failed to generate a random prompt. Please try again.");
+    } finally {
+      setIsLoadingRandomPrompt(false);
+    }
+  };
 
   const currentModel = models.find(model => model.id === selectedModel);
   const isLoggedIn = !!localStorage.getItem('token');
@@ -139,6 +152,17 @@ const PremiumGenerator = ({ openAuthModal }) => {
               className="w-full p-2 border-2 border-black rounded-md text-sm"
               rows={3} 
             />
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={generateRandomPrompt}
+                disabled={isLoadingRandomPrompt}
+                className="w-full sm:w-auto bg-purple-100 text-purple-700 hover:bg-purple-200 font-medium py-2 px-4 rounded-md transition duration-300 text-sm flex items-center justify-center space-x-2"
+              >
+                <span role="img" aria-label="dice" className="text-xl">🎲</span>
+                <span>{isLoadingRandomPrompt ? 'Loading...' : 'Random Prompt'}</span>
+              </button>
+            </div>
           </div>
           {currentModel.supportsNegativePrompt && (
             <div>
