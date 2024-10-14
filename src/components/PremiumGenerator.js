@@ -7,6 +7,7 @@ import axios from 'axios';
 const models = [
   { id: "flux/schnell", name: "FLUX.1 [schnell]", supportsNegativePrompt: false},
   { id: "flux/dev", name: "FLUX.1 [dev]", supportsNegativePrompt: false },
+  { id: "dall-e-3", name: "DALL-E 3", supportsNegativePrompt: false },
   { id: "stable-diffusion-v3-medium", name: "Stable Diffusion V3", supportsNegativePrompt: true },
   { id: "playground-v25", name: "Playground v2.5", supportsNegativePrompt: true },
   { id: "flux-pro", name: "FLUX.1.1 [pro]", supportsNegativePrompt: false },
