@@ -10,7 +10,7 @@ function ActivateAccount() {
   useEffect(() => {
     const activateAccount = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/activate/`, { token });
+        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/activate/`, { token });
         if (response.data.success) {
           setStatus('success');
           setTimeout(() => navigate('/'), 5000); // Redirect to home page after 5 seconds
