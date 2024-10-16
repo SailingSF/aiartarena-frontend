@@ -5,12 +5,12 @@ import NSFWModal from './NSFWModal';
 import axios from 'axios';
 
 const models = [
-  { id: "flux/schnell", name: "FLUX.1 [schnell]", supportsNegativePrompt: false},
-  { id: "flux/dev", name: "FLUX.1 [dev]", supportsNegativePrompt: false },
-  { id: "dall-e-3", name: "DALL-E 3", supportsNegativePrompt: false },
-  { id: "stable-diffusion-v3-medium", name: "Stable Diffusion V3", supportsNegativePrompt: true },
-  { id: "playground-v25", name: "Playground v2.5", supportsNegativePrompt: true },
-  { id: "flux-pro", name: "FLUX.1.1 [pro]", supportsNegativePrompt: false },
+  { id: "flux/schnell", name: "FLUX.1 [schnell]", supportsNegativePrompt: false, description: "FLUX.1 [schnell] is optimized for speed, delivering quick results while maintaining good quality. Ideal for rapid prototyping and iterative design processes." },
+  { id: "flux/dev", name: "FLUX.1 [dev]", supportsNegativePrompt: false, description: "FLUX.1 [dev] is the development version of FLUX, offering cutting-edge features and improvements. It's great for experimenting with the latest AI image generation capabilities." },
+  { id: "dall-e-3", name: "DALL-E 3", supportsNegativePrompt: false, description: "DALL-E 3 excels at creating highly detailed images from text descriptions. It's particularly good at understanding complex prompts and generating creative, diverse outputs. OpenAI takes all prompts and transforms them to make more detailed images, but also will remove things for safety and copyright reasons, users have no control over this but the prompt they used will be returned so you can see what generated that image. Sometimes it can feel 'woke' but the main purpose is to make better, more interesting images." },
+  { id: "stable-diffusion-v3-medium", name: "Stable Diffusion V3", supportsNegativePrompt: true, description: "Stable Diffusion V3 is the most recent and powerful model of the open Stable Diffusion line. It's versatile but performs best at making very 'AI Art' looking images, with the added benefit of supporting negative prompts for fine-tuned control." },
+  { id: "playground-v25", name: "Playground v2.5", supportsNegativePrompt: true, description: "Playground v2.5 is known for its flexibility and wide range of artistic styles. It's great for exploring different visual aesthetics and supports negative prompts for precise adjustments." },
+  { id: "flux-pro", name: "FLUX.1.1 [pro]", supportsNegativePrompt: false, description: "FLUX.1.1 [pro] is the premium version of FLUX, offering enhanced image quality and more advanced features. It's ideal for professional-grade image generation tasks." },
 ];
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -141,6 +141,11 @@ const PremiumGenerator = ({ openAuthModal }) => {
               ))}
             </select>
           </div>
+          {currentModel && (
+            <div className="mt-2 p-3 bg-purple-100 rounded-md">
+              <p className="text-sm text-gray-700">{currentModel.description}</p>
+            </div>
+          )}
           <div>
             <label htmlFor="prompt" className="block text-sm font-bold text-gray-700 mb-1">Image Description</label>
             <textarea
