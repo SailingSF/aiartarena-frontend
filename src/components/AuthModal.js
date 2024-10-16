@@ -39,7 +39,11 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate, message }) => {
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('credits', response.data.user.credits);
-          setSuccessMessage(isLogin ? 'Login successful!' : 'Registration successful!');
+          setSuccessMessage(
+            isLogin
+              ? 'Login successful!'
+              : `${response.data.message} You're now signed in.`
+          );
           setTimeout(() => {
             onAuthenticate(true);
             onClose();
@@ -124,6 +128,9 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate, message }) => {
           onChange={(e) => setUsername(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
         />
+        <p className="text-sm text-gray-600 mb-4">
+          After registration, check your email to verify your account and receive 20 free credits!
+        </p>
       </>
     );
   
