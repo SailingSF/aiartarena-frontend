@@ -8,6 +8,7 @@ import Gallery from './components/Gallery';
 import Info from './components/Info';
 import Home from './components/Home';
 import AuthModal from './components/AuthModal';
+import ActivateAccount from './components/ActivateAccount';
 import usePageTracking from './usePageTracking';
 
 function AppContent() {
@@ -42,6 +43,7 @@ function AppContent() {
         <Route path="/premium" element={<PremiumGenerator openAuthModal={handleOpenAuthModal} />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/info" element={<Info />} />
+        <Route path="/activate/:token" element={<ActivateAccount />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <AuthModal
