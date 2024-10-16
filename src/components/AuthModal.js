@@ -47,7 +47,7 @@ const AuthModal = ({ isOpen, onClose, onAuthenticate, message }) => {
           setTimeout(() => {
             onAuthenticate(true);
             onClose();
-          }, 1500); // Close the modal after 1.5 seconds
+          }, 2000); // Close the modal after 2 seconds
         } else {
           setError('Authentication failed. Please try again.');
         }
