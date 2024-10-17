@@ -27,10 +27,10 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
       <h1 className="text-3xl font-bold mb-6 text-center">🏟️ Welcome to the Arena 🏟️</h1>
-      <h3 className="text-xl font-bold mb-6 text-center">An easy way to make AI Images</h3>
+      <h3 className="text-xl font-bold mb-6 text-center">Generate, compare, and share AI Images</h3>
       <div className="space-y-6 py-4 px-2">
         <div>
-          <p className="text-center mb-2 font-medium">Compare AI image models using the same prompt</p>
+          <p className="text-center mb-2 font-medium">Compare AI image models</p>
           <Link to="/arena">
             <Button className="bg-amber-400 text-black hover:bg-amber-500 ring-4 ring-yellow-400 ring-opacity-50" icon={LandPlot}>
               THE ARENA
@@ -46,7 +46,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           </Link>
         </div>
         <div>
-          <p className="text-center mb-2 font-medium">Access premium AI Image models that generate much faster with AI assisted prompting</p>
+          <p className="text-center mb-2 font-medium">Access premium AI models faster and with assisted prompting</p>
           <Link to="/premium">
             <Button className="bg-purple-500 text-white hover:bg-purple-600" icon={Image}>
               <em>PREMIUM</em> Image Generator
@@ -54,7 +54,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           </Link>
         </div>
         <div>
-          <p className="text-center mb-2 font-medium">Browse and upvote images generated on the platform to compare models and prompts</p>
+          <p className="text-center mb-2 font-medium">Browse and upvote images, compare models and prompts</p>
           <Link to="/gallery">
             <Button className="bg-green-500 text-white hover:bg-green-600" icon={Grid}>
               Gallery
@@ -64,7 +64,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
       </div>
       <div className='mt-8'>
         <h3 className="text-xl font-bold mb-4 text-center">What is this?</h3>
-        <p className="text-center mb-2 font-medium">Learn more about our features</p>
+        <p className="text-center mb-2 font-medium">Learn more</p>
         <div>
           <Link to="/info">
             <Button className="bg-gray-500 text-white hover:bg-gray-600" icon={Info}>
@@ -73,7 +73,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           </Link>
         </div>
       </div>
-      <p className="text-center mt-8 mb-2 font-medium">Login to use THE ARENA, Premium Generator, and upvote images</p>        
+      <p className="text-center mt-8 mb-2 font-medium">Login to use THE ARENA, Premium Generator, and to upvote images</p>        
       <div className="border-t border-gray-200 p-4 mt-1 bg-gray-50 flex space-x-4">
         <Button onClick={handleOpenAuthModal} className="bg-gray-200 text-gray-800 hover:bg-gray-300 flex-1" icon={LogIn}>
           Login

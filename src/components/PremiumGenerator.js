@@ -124,7 +124,7 @@ const PremiumGenerator = ({ openAuthModal }) => {
       <InPageNavbar pageColor="bg-purple-500" /> 
       <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center"><em>PREMIUM</em> AI Image Generator</h2>
-        <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Good stuff and quicker</p>
+        <p className="text-center mt-2 text-gray-200 text-sm sm:text-base">Premium models, done quickly. With automatic prompt optimization.</p>
       </div>
       <div className="p-6 bg-stone-50">
         <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
