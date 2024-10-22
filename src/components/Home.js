@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LandPlot, Sparkles, Image, Grid, LogIn, LogOut, Info } from 'lucide-react';
+import axios from 'axios';
+import ImageModal from './ImageModal';
 
 const Button = ({ children, onClick, className, icon: Icon, to, primary }) => {
   const ButtonComponent = to ? Link : motion.button;
@@ -36,6 +38,22 @@ const FeatureCard = ({ title, description, icon: Icon }) => (
 );
 
 const Home = ({ onLogout, onOpenAuthModal }) => {
+  const [topImage, setTopImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+
+  useEffect(() => {
+    const fetchTopImage = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/top-image/`);
+        setTopImage(response.data);
+      } catch (error) {
+        console.error('Error fetching top image:', error);
+      }
+    };
+
+    fetchTopImage();
+  }, []);
+
   const handleOpenAuthModal = () => {
     onOpenAuthModal();
   };
@@ -53,6 +71,48 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           Your creative playground for AI image generation - compare models, create stunning images, and join our community
         </p>
       </motion.div>
+
+      {/* Add Top Image Section after Hero */}
+      {topImage && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mb-8 max-w-2xl mx-auto"
+        >
+          <h2 className="text-2xl font-bold mb-4 text-center">🏆 Top Generation 🏆</h2>
+          <div className="relative group w-fit mx-auto">
+            <img 
+              src={topImage.url} 
+              alt={topImage.generation_log.prompt}
+              className="h-64 object-contain rounded-lg cursor-pointer transition duration-300 group-hover:opacity-90 shadow-xl"
+              onClick={() => setShowImageModal(true)}
+            />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+              <button 
+                className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg"
+                onClick={() => setShowImageModal(true)}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {showImageModal && topImage && (
+        <ImageModal 
+          image={topImage} 
+          onClose={() => setShowImageModal(false)}
+          customButton={
+            <Link 
+              to="/gallery" 
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300"
+            >
+              View in Gallery
+            </Link>
+          }
+        />
+      )}
 
       {/* Feature Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
