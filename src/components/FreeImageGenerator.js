@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import NSFWModal from './NSFWModal';
 import APIKeySetup from './APIKeySetup';
 import InPageNavbar from './InPageNavbar';
@@ -281,9 +282,18 @@ const FreeImageGenerator = ({ onLogout }) => {
           <div className="w-full">
             <p className="text-center text-sm font-bold text-gray-700 mb-4">Your generated image:</p>
             <img src={generatedImageUrl} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
+            {/* Add gallery link only when there's an image */}
+            <div className="mt-6 text-center">
+              <Link
+                to="/gallery"
+                className="inline-block bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition duration-300 font-bold"
+              >
+                Check Out and Vote on Other Generations
+              </Link>
+            </div>
           </div>
         ) : (
-          <div className="text-center text-gray-500 w-full">
+          <div className="text-center text-gray-500">
             <svg className="mx-auto h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -291,6 +301,15 @@ const FreeImageGenerator = ({ onLogout }) => {
             <p className="text-sm font-bold">Your generated image will appear here</p>
           </div>
         )}
+      </div>
+      {/* Add home button with black border */}
+      <div className="bg-stone-50 p-4 border-t-2 border-black flex justify-center">
+        <Link
+          to="/"
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300"
+        >
+          Home
+        </Link>
       </div>
       <NSFWModal
         isOpen={showNSFWWarning}
