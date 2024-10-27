@@ -6,9 +6,7 @@ const usePageTracking = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
-    }
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
   }, [location]);
 };
 

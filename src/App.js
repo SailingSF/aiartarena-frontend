@@ -58,6 +58,7 @@ function AppContent() {
 
 function App() {
   useEffect(() => {
+    // Initialize GA4 with your measurement ID
     ReactGA.initialize('G-EKLE5ZL133');
   }, []);
 
