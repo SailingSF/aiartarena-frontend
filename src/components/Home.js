@@ -220,7 +220,7 @@ const Home = ({ onLogout, onOpenAuthModal }) => {
           </div>
         </div>
         
-        <div className="flex space-x-4">
+        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
           <Button 
             onClick={handleOpenAuthModal} 
             className="bg-amber-400 text-black hover:bg-amber-500 ring-4 ring-yellow-400 ring-opacity-50 flex-1" 
