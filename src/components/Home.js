@@ -6,23 +6,43 @@ import axios from 'axios';
 import ImageModal from './ImageModal';
 
 const Button = ({ children, onClick, className, icon: Icon, to, primary }) => {
-  const ButtonComponent = to ? Link : motion.button;
   const baseStyles = "w-full flex items-center justify-center space-x-2 py-4 px-6 rounded-lg font-semibold transition-colors duration-300";
   const primaryStyles = primary ? 
     "bg-amber-400 text-black hover:bg-amber-500 ring-4 ring-yellow-400 ring-opacity-50" :
     className;
 
+  const buttonContent = (
+    <>
+      {Icon && <Icon size={24} />}
+      <span>{children}</span>
+    </>
+  );
+
+  if (to) {
+    return (
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Link
+          to={to}
+          className={`${baseStyles} ${primaryStyles}`}
+        >
+          {buttonContent}
+        </Link>
+      </motion.div>
+    );
+  }
+
   return (
-    <ButtonComponent
-      to={to}
+    <motion.button
       onClick={onClick}
       className={`${baseStyles} ${primaryStyles}`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      {Icon && <Icon size={24} className="animate-pulse" />}
-      <span>{children}</span>
-    </ButtonComponent>
+      {buttonContent}
+    </motion.button>
   );
 };
 
