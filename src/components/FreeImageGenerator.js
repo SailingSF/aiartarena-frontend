@@ -9,12 +9,12 @@ import Tooltip from './Tooltip';
 
 const models = [
   { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false, speed: 'fast' },
-  { id: "stabilityai/stable-diffusion-2-1", name: "Stable Diffusion 2.1 (Ok + Slow)", supportsNegativePrompt: true, speed: 'slow' },
-  { id: "CompVis/stable-diffusion-v1-4", name: "Stable Diffusion 1.4 (Ok + reliable)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "stabilityai/stable-diffusion-3.5-large-turbo", name: "Stable Diffusion 3.5 Large (Ok + Slow)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "Shakker-Labs/FLUX.1-dev-LoRA-Logo-Design", name: "FLUX.1 (dev) Logo Design (Makes logos)", supportsNegativePrompt: false, speed: 'slow' },
   { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false, speed: 'slow' },
-  { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "Stable Diffusion XL Base 1.0 (Good + Slow)", supportsNegativePrompt: true, speed: 'slow' },
   { id: "Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur", name: "FLUX.1 LoRA AntiBlur (Great for realistic)", supportsNegativePrompt: false, speed: 'slow' },
   { id: "XLabs-AI/flux-RealismLora", name: "Flux Realism (Great for realistic portraits)", supportsNegativePrompt: false, speed: 'slow' },
+  { id: "Jovie/Midjourney", name: "'Midjourney Model Stlye' (Great for photorealistic to replicate midjourney)", supportsNegativePrompt: false, speed: 'slow' },
   { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true, speed: 'slow' }
 ];
 
@@ -96,7 +96,10 @@ const FreeImageGenerator = ({ onLogout }) => {
       }
     } catch (error) {
       console.error("Error generating image:", error);
-      if (error.response && error.response.status === 504) {
+      if (error.response && error.response.status === 400 && 
+          error.response.data.message === "The request to the external API timed out") {
+        alert("The request to the image generator timed out, try again in one second.");
+      } else if (error.response && error.response.status === 504) {
         alert("The free image generator is taking too long to respond. This might work if you try again in a few seconds. Premium image generator doesn't have this problem.");
       } else {
         alert(`Error generating image: ${error.message}. ${hfApiKey ? "Please check your Hugging Face API key." : "This is probably not Max's fault. I would try again a few times before giving up. But I'm built different, so do you."}`);
