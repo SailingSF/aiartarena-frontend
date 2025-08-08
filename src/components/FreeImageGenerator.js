@@ -9,13 +9,15 @@ import Tooltip from './Tooltip';
 
 const models = [
   { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell (Great + Fast)", supportsNegativePrompt: false, speed: 'fast' },
-  { id: "stabilityai/stable-diffusion-3.5-large-turbo", name: "Stable Diffusion 3.5 Large (Ok + Slow)", supportsNegativePrompt: true, speed: 'slow' },
+  { id: "Qwen/Qwen-Image-Generator", name: "Qwen Image Generator (Ok + Fast)", supportsNegativePrompt: true, speed: 'fast' },
   { id: "Shakker-Labs/FLUX.1-dev-LoRA-Logo-Design", name: "FLUX.1 (dev) Logo Design (Makes logos)", supportsNegativePrompt: false, speed: 'slow' },
   { id: "black-forest-labs/FLUX.1-dev", name: "FLUX.1 (Great + Slow)", supportsNegativePrompt: false, speed: 'slow' },
-  { id: "Shakker-Labs/FLUX.1-dev-LoRA-AntiBlur", name: "FLUX.1 LoRA AntiBlur (Great for realistic)", supportsNegativePrompt: false, speed: 'slow' },
-  { id: "XLabs-AI/flux-RealismLora", name: "Flux Realism (Great for realistic portraits)", supportsNegativePrompt: false, speed: 'slow' },
-  { id: "Jovie/Midjourney", name: "'Midjourney Model Stlye' (Great for photorealistic to replicate midjourney)", supportsNegativePrompt: false, speed: 'slow' },
-  { id: "enhanceaiteam/Flux-uncensored", name: "Flux Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true, speed: 'slow' }
+  { id: "black-forest-labs/FLUX.1-Kreativ-dev", name: "FLUX.1 Kreativ (Great for realistic)", supportsNegativePrompt: false, speed: 'fast' },
+  { id: "ByteDance/Hyper-SD", name: "Bytedance Hyper-SD", supportsNegativePrompt: false, speed: 'fast' },
+  { id: "playgroundai/playground-v2.5-1024px-aesthetic", name: "Playground v2.5 Aesthetic", supportsNegativePrompt: false, speed: 'fast' },
+  { id: "HiDream-ai/HiDream-I1-Full", name: "HiDream I1 (NEW) (Good at Prompt following)", supportsNegativePrompt: false, speed: 'fast' },
+  { id: "UmeAiRT/FLUX.1-dev-LoRA-Modern_Pixel_art", name: "UmeAiRTFlux Pixel Art ", supportsNegativePrompt: false, speed: 'slow' },
+  { id: "uriel353/photorealistic-nsfw", name: "Photorealistic NSFW Uncensored 🔥🔥🔥", supportsNegativePrompt: false, nsfw: true, speed: 'slow' }
 ];
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
