@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const PasswordSetup = ({ isOpen, setIsOpen, onAuthenticate }) => {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+interface PasswordSetupProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  onAuthenticate: (success: boolean) => void;
+}
+
+const PasswordSetup: React.FC<PasswordSetupProps> = ({ isOpen, setIsOpen, onAuthenticate }) => {
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -11,7 +17,7 @@ const PasswordSetup = ({ isOpen, setIsOpen, onAuthenticate }) => {
     }
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (password === process.env.REACT_APP_SITE_PASSWORD) {
       onAuthenticate(true);
@@ -29,27 +35,13 @@ const PasswordSetup = ({ isOpen, setIsOpen, onAuthenticate }) => {
       <div className="bg-white border-4 border-black rounded-xl p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Enter Password</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            required
-            className="w-full p-2 border-2 border-black rounded-md"
-          />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" required className="w-full p-2 border-2 border-black rounded-md" />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="bg-gray-200 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300"
-            >
+            <button type="button" onClick={() => setIsOpen(false)} className="bg-gray-200 text-black font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300"
-            >
+            <button type="submit" className="bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300">
               Submit
             </button>
           </div>
@@ -60,3 +52,5 @@ const PasswordSetup = ({ isOpen, setIsOpen, onAuthenticate }) => {
 };
 
 export default PasswordSetup;
+
+

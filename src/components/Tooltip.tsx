@@ -1,24 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const Tooltip = ({ children, text }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const timeoutRef = useRef(null);
-  const tooltipRef = useRef(null);
+interface TooltipProps {
+  children: React.ReactNode;
+  text: string;
+}
 
-  const showTooltip = () => {
-    clearTimeout(timeoutRef.current);
+const Tooltip: React.FC<TooltipProps> = ({ children, text }) => {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const timeoutRef = useRef<number | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const showTooltip = (): void => {
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     setIsVisible(true);
   };
 
-  const hideTooltip = () => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setIsVisible(false), 300);
+  const hideTooltip = (): void => {
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => setIsVisible(false), 300);
   };
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+  useEffect(() => () => {
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
   }, []);
 
   useEffect(() => {
@@ -26,7 +29,6 @@ const Tooltip = ({ children, text }) => {
     if (tooltipElement) {
       const rect = tooltipElement.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
-      
       if (rect.right > viewportWidth) {
         tooltipElement.style.left = 'auto';
         tooltipElement.style.right = '0';
@@ -36,11 +38,7 @@ const Tooltip = ({ children, text }) => {
 
   return (
     <div className="relative inline-block">
-      <div
-        className="p-2 -m-2"
-        onMouseEnter={showTooltip}
-        onMouseLeave={hideTooltip}
-      >
+      <div className="p-2 -m-2" onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
         {children}
       </div>
       <div
@@ -69,10 +67,12 @@ const Tooltip = ({ children, text }) => {
             borderStyle: 'solid',
             borderColor: 'rgb(17, 24, 39) transparent transparent transparent',
           }}
-        ></div>
+        />
       </div>
     </div>
   );
 };
 
 export default Tooltip;
+
+

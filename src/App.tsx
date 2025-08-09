@@ -11,24 +11,25 @@ import AuthModal from './components/AuthModal';
 import ActivateAccount from './components/ActivateAccount';
 import usePageTracking from './usePageTracking';
 
-function AppContent() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMessage, setAuthModalMessage] = useState('');
+function AppContent(): JSX.Element {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [authModalMessage, setAuthModalMessage] = useState<string>('');
 
-  usePageTracking(); 
+  usePageTracking();
 
-  const handleOpenAuthModal = (message = '') => {
+  const handleOpenAuthModal = (message: string = ''): void => {
     setAuthModalMessage(message);
     setIsAuthModalOpen(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     localStorage.removeItem('token');
+    // Intentionally keep console for developer feedback
+    // eslint-disable-next-line no-console
     console.log('User logged out');
   };
 
-  const handleAuthenticate = (success) => {
-    // Handle successful authentication
+  const handleAuthenticate = (success: boolean): void => {
     if (success) {
       setIsAuthModalOpen(false);
     }
@@ -56,9 +57,8 @@ function AppContent() {
   );
 }
 
-function App() {
+function App(): JSX.Element {
   useEffect(() => {
-    // Initialize GA4 with your measurement ID
     ReactGA.initialize('G-EKLE5ZL133');
   }, []);
 
@@ -70,3 +70,5 @@ function App() {
 }
 
 export default App;
+
+

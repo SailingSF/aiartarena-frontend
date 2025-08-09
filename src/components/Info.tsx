@@ -2,17 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import InPageNavbar from './InPageNavbar';
 
-const Info = () => {
+const Info: React.FC = () => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
-      <InPageNavbar pageColor="bg-gray-500" /> 
+      <InPageNavbar pageColor="bg-gray-500" />
       <h1 className="text-3xl font-bold mb-6 mt-4 text-center">🏟️ About The Arena 🏟️</h1>
-      
+
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">What is The Arena?</h2>
-        <p className="mb-4">
-          AIArtArena.com is a platform that allows users to easily create AI-generated images. Whether you're an artist looking for inspiration, a content creator in need of unique visuals, or just someone who wants to make funny pictures, The Arena makes it easy to use and compare state of the art AI image models.
-        </p>
+        <p className="mb-4">AIArtArena.com is a platform that allows users to easily create AI-generated images. Whether you're an artist looking for inspiration, a content creator in need of unique visuals, or just someone who wants to make funny pictures, The Arena makes it easy to use and compare state of the art AI image models.</p>
       </section>
 
       <section className="mb-8">
@@ -57,3 +55,5 @@ const Info = () => {
 };
 
 export default Info;
+
+

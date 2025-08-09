@@ -1,6 +1,7 @@
 import React from 'react';
+import type { NSFWModalProps } from '../types';
 
-const NSFWModal = ({ isOpen, onClose, onConfirm, prompt }) => {
+const NSFWModal: React.FC<NSFWModalProps> = ({ isOpen, onClose, onConfirm, prompt }) => {
   if (!isOpen) return null;
 
   return (
@@ -31,3 +32,5 @@ const NSFWModal = ({ isOpen, onClose, onConfirm, prompt }) => {
 };
 
 export default NSFWModal;
+
+
