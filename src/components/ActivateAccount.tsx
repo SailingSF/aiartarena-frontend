@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function ActivateAccount() {
-  const [status, setStatus] = useState('activating');
-  const [message, setMessage] = useState('');
-  const { token } = useParams();
+type Status = 'activating' | 'success' | 'error';
+
+const ActivateAccount: React.FC = () => {
+  const [status, setStatus] = useState<Status>('activating');
+  const [message, setMessage] = useState<string>('');
+  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,11 +17,12 @@ function ActivateAccount() {
         if (response.data.success || response.data.message) {
           setStatus('success');
           setMessage(response.data.message || 'Your account has been successfully activated!');
-          setTimeout(() => navigate('/'), 5000); // Redirect to home page after 5 seconds
+          setTimeout(() => navigate('/'), 5000);
         } else {
           setStatus('error');
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Activation error:', error);
         setStatus('error');
       }
@@ -40,20 +43,18 @@ function ActivateAccount() {
         {status === 'success' && (
           <div>
             <p className="text-green-600 mb-2">{message}</p>
-            {!message.includes('already been verified') && (
-              <p>You have claimed your 20 free credits.</p>
-            )}
+            {!message.includes('already been verified') && <p>You have claimed your 20 free credits.</p>}
             <p className="mt-4">Redirecting to home page in 5 seconds...</p>
           </div>
         )}
         {status === 'error' && (
-          <p className="text-red-600">
-            There was an error activating your credits. Please try again or contact support.
-          </p>
+          <p className="text-red-600">There was an error activating your credits. Please try again or contact support.</p>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default ActivateAccount;
+
+

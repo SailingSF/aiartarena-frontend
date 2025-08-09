@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import type { ApiKeySetupProps } from '../types';
 
-const APIKeySetup = ({ isOpen, setIsOpen, onSave, onClear, initialApiKey }) => {
-  const [inputKey, setInputKey] = useState('');
+const APIKeySetup: React.FC<ApiKeySetupProps> = ({ isOpen, setIsOpen, onSave, onClear, initialApiKey }) => {
+  const [inputKey, setInputKey] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -9,13 +10,13 @@ const APIKeySetup = ({ isOpen, setIsOpen, onSave, onClear, initialApiKey }) => {
     }
   }, [isOpen, initialApiKey]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     onSave(inputKey);
     setIsOpen(false);
   };
 
-  const handleClear = () => {
+  const handleClear = (): void => {
     onClear();
     setInputKey('');
     setIsOpen(false);
@@ -68,3 +69,5 @@ const APIKeySetup = ({ isOpen, setIsOpen, onSave, onClear, initialApiKey }) => {
 };
 
 export default APIKeySetup;
+
+

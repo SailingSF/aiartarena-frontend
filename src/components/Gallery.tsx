@@ -5,30 +5,32 @@ import ImageModal from './ImageModal';
 import InPageNavbar from './InPageNavbar';
 import LoadingSpinner from './LoadingSpinner';
 import UpvoteButton from './UpvoteButton';
+import type { GalleryResponse, ImageItem } from '../types';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL as string | undefined;
 
-const Gallery = () => {
-  const [images, setImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const [previousPageUrl, setPreviousPageUrl] = useState(null);
+const Gallery: React.FC = () => {
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
+  const [previousPageUrl, setPreviousPageUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!API_BASE_URL) return;
     fetchImages(`${API_BASE_URL}/api/gallery-images/`);
   }, []);
 
-  const fetchImages = async (url) => {
+  const fetchImages = async (url: string): Promise<void> => {
     setIsLoading(true);
     try {
-      const response = await axios.get(url);
-      console.log('API response:', response.data);
+      const response = await axios.get<GalleryResponse>(url);
       setImages(response.data.results);
       setNextPageUrl(response.data.next);
       setPreviousPageUrl(response.data.previous);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching images:', error);
       setImages([]);
     } finally {
@@ -36,20 +38,17 @@ const Gallery = () => {
     }
   };
 
-  const handleImageClick = (image) => setSelectedImage(image);
-  const handleCloseModal = () => setSelectedImage(null);
-
-  const handleNextPage = () => {
+  const handleNextPage = (): void => {
     if (nextPageUrl) {
       fetchImages(nextPageUrl);
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((p) => p + 1);
     }
   };
 
-  const handlePreviousPage = () => {
+  const handlePreviousPage = (): void => {
     if (previousPageUrl) {
       fetchImages(previousPageUrl);
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((p) => p - 1);
     }
   };
 
@@ -63,50 +62,35 @@ const Gallery = () => {
             Home
           </Link>
         </div>
-        
+
         {isLoading ? (
           <LoadingSpinner />
         ) : images.length > 0 ? (
           <>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
               {images.map((image) => (
-                <div key={image.id} className="relative group aspect-w-1 aspect-h-1">
+                <div key={image.id ?? image.image_id} className="relative group aspect-square">
                   <img
-                    src={image.thumbnail_url}
+                    src={image.thumbnail_url || image.url}
                     alt={image.generation_log.prompt}
                     className="w-full h-full object-cover cursor-pointer transition duration-300 group-hover:opacity-75"
-                    onClick={() => handleImageClick(image)}
+                    onClick={() => setSelectedImage(image)}
                   />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                    <button 
-                      className="bg-black bg-opacity-50 text-white px-3 py-1 rounded mr-2 text-sm"
-                      onClick={() => handleImageClick(image)}
-                    >
+                    <button className="bg-black bg-opacity-50 text-white px-3 py-1 rounded mr-2 text-sm" onClick={() => setSelectedImage(image)}>
                       View
                     </button>
-                    <UpvoteButton imageId={image.id} />
+                    {image.id != null && <UpvoteButton imageId={image.id} />}
                   </div>
                 </div>
               ))}
             </div>
             <div className="mt-6 flex justify-between items-center">
-              <button
-                onClick={handlePreviousPage}
-                disabled={!previousPageUrl}
-                className={`px-4 py-2 rounded ${
-                  previousPageUrl ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                } transition duration-300`}
-              >
+              <button onClick={handlePreviousPage} disabled={!previousPageUrl} className={`px-4 py-2 rounded ${previousPageUrl ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'} transition duration-300`}>
                 Previous
               </button>
               <span className="text-lg font-semibold">Page {currentPage}</span>
-              <button
-                onClick={handleNextPage}
-                disabled={!nextPageUrl}
-                className={`px-4 py-2 rounded ${
-                  nextPageUrl ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                } transition duration-300`}
-              >
+              <button onClick={handleNextPage} disabled={!nextPageUrl} className={`px-4 py-2 rounded ${nextPageUrl ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'} transition duration-300`}>
                 Next
               </button>
             </div>
@@ -115,12 +99,12 @@ const Gallery = () => {
           <p className="text-center text-gray-500">No images found.</p>
         )}
 
-        {selectedImage && (
-          <ImageModal image={selectedImage} onClose={handleCloseModal} />
-        )}
+        {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
       </div>
     </div>
   );
 };
 
 export default Gallery;
+
+
