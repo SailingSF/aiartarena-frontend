@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# NOTE: This file is overridden during build by scripts/generate-sitemap.js
+Sitemap: https://aiartarena.com/sitemap.xml
+
+
