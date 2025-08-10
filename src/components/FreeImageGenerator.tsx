@@ -11,10 +11,10 @@ import type { TextToImageModel } from '../types';
 
 const models: TextToImageModel[] = [
   { id: 'black-forest-labs/FLUX.1-schnell', name: 'FLUX.1 Schnell (Great + Fast)', supportsNegativePrompt: false, speed: 'fast' },
-  { id: 'Qwen/Qwen-Image-Generator', name: 'Qwen Image Generator (Ok + Fast)', supportsNegativePrompt: true, speed: 'fast' },
+  { id: 'Qwen/Qwen-Image', name: 'Qwen Image (Good + Fast)', supportsNegativePrompt: true, speed: 'fast' },
   { id: 'Shakker-Labs/FLUX.1-dev-LoRA-Logo-Design', name: 'FLUX.1 (dev) Logo Design (Makes logos)', supportsNegativePrompt: false, speed: 'slow' },
   { id: 'black-forest-labs/FLUX.1-dev', name: 'FLUX.1 (Great + Slow)', supportsNegativePrompt: false, speed: 'slow' },
-  { id: 'black-forest-labs/FLUX.1-Kreativ-dev', name: 'FLUX.1 Kreativ (Great for realistic)', supportsNegativePrompt: false, speed: 'fast' },
+  { id: 'black-forest-labs/FLUX.1-Krea-dev', name: 'FLUX.1 Krea (Great for realistic)', supportsNegativePrompt: false, speed: 'fast' },
   { id: 'ByteDance/Hyper-SD', name: 'Bytedance Hyper-SD', supportsNegativePrompt: false, speed: 'fast' },
   { id: 'playgroundai/playground-v2.5-1024px-aesthetic', name: 'Playground v2.5 Aesthetic', supportsNegativePrompt: false, speed: 'fast' },
   { id: 'HiDream-ai/HiDream-I1-Full', name: 'HiDream I1 (NEW) (Good at Prompt following)', supportsNegativePrompt: false, speed: 'fast' },
