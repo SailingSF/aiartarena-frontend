@@ -1,10 +1,16 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import InPageNavbar from './InPageNavbar';
 
 const Info: React.FC = () => {
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
+      <Helmet>
+        <title>About AI Art Arena</title>
+        <meta name="description" content="Learn what AI Art Arena is, features, and FAQs about generating AI images and comparing models." />
+        <link rel="canonical" href="https://yourdomain.com/info" />
+      </Helmet>
       <InPageNavbar pageColor="bg-gray-500" />
       <h1 className="text-3xl font-bold mb-6 mt-4 text-center">🏟️ About The Arena 🏟️</h1>
 

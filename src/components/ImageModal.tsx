@@ -20,7 +20,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ image, onClose, customButton })
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div ref={modalRef} className="bg-white rounded-lg p-4 max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <img src={image.url} alt={image.generation_log.prompt} className="w-full h-auto mb-4" />
+        <img src={image.url} alt={image.generation_log.prompt} loading="lazy" width={1024} height={1024} className="w-full h-auto mb-4" />
         {customButton && (
           <div className="flex justify-center items-center mb-4">
             {customButton}

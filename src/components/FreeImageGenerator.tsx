@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import NSFWModal from './NSFWModal';
 import APIKeySetup from './APIKeySetup';
@@ -141,6 +142,11 @@ const FreeImageGenerator: React.FC = () => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
+      <Helmet>
+        <title>Free AI Image Generator – Hugging Face Models</title>
+        <meta name="description" content="Generate AI images for free using Hugging Face models. Optional negative prompts and random prompt generator." />
+        <link rel="canonical" href="https://yourdomain.com/generate" />
+      </Helmet>
       <InPageNavbar pageColor="bg-blue-500" />
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center">AI Image Generator</h2>
@@ -233,7 +239,7 @@ const FreeImageGenerator: React.FC = () => {
         {generatedImageUrl ? (
           <div className="w-full">
             <p className="text-center text-sm font-bold text-gray-700 mb-4">Your generated image:</p>
-            <img src={generatedImageUrl} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
+            <img src={generatedImageUrl} alt="Generated" loading="lazy" width={1024} height={1024} className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
             <div className="mt-6 text-center">
               <Link to="/gallery" className="inline-block bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition duration-300 font-bold">
                 Check Out and Vote on Other Generations

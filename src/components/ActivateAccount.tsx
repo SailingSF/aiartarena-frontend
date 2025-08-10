@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -37,6 +38,10 @@ const ActivateAccount: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600 p-4">
+      <Helmet>
+        <title>Activate Account – AI Art Arena</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="bg-white p-8 rounded-lg shadow-md text-center">
         <h1 className="text-2xl font-bold mb-4">Account Activation</h1>
         {status === 'activating' && <p>Activating your account...</p>}

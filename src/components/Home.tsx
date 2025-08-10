@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LandPlot, Sparkles, Image as ImageIcon, Grid, LogIn, LogOut, Info as InfoIcon } from 'lucide-react';
@@ -86,6 +87,13 @@ const Home: React.FC<HomeProps> = ({ onLogout, onOpenAuthModal }) => {
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl p-6 shadow-xl">
+      <Helmet>
+        <title>AI Art Arena – Compare Models, Generate Images, Gallery</title>
+        <meta name="description" content="Compare AI image models in The Arena, generate free or premium AI images, and explore the community gallery." />
+        <link rel="canonical" href="https://yourdomain.com/" />
+        <meta property="og:title" content="AI Art Arena" />
+        <meta property="og:description" content="Compare AI models and create stunning AI art." />
+      </Helmet>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">🏟️ Welcome to the Arena 🏟️</h1>
         <p className="text-xl text-gray-700 mb-6">Your creative playground for AI image generation - compare models, create stunning images, and join our community</p>
@@ -95,7 +103,7 @@ const Home: React.FC<HomeProps> = ({ onLogout, onOpenAuthModal }) => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8 max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold mb-4 text-center">🏆 Top Generation 🏆</h2>
           <div className="relative group w-fit mx-auto">
-            <img src={topImage.url} alt={topImage.generation_log.prompt} className="h-64 object-contain rounded-lg cursor-pointer transition duration-300 group-hover:opacity-90 shadow-xl" onClick={() => setShowImageModal(true)} />
+            <img src={topImage.url} alt={topImage.generation_log.prompt} loading="lazy" width={512} height={512} className="h-64 object-contain rounded-lg cursor-pointer transition duration-300 group-hover:opacity-90 shadow-xl" onClick={() => setShowImageModal(true)} />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
               <button className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg" onClick={() => setShowImageModal(true)}>
                 View Details

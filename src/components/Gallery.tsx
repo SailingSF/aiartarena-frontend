@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ImageModal from './ImageModal';
@@ -54,6 +55,11 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="w-full mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
+      <Helmet>
+        <title>AI Art Gallery – Browse and Upvote Images</title>
+        <meta name="description" content="Explore community-generated AI art, view prompts and models, and upvote your favorites." />
+        <link rel="canonical" href="https://yourdomain.com/gallery" />
+      </Helmet>
       <InPageNavbar pageColor="bg-green-500" />
       <div className="p-6">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 mt-4">
@@ -73,6 +79,9 @@ const Gallery: React.FC = () => {
                   <img
                     src={image.thumbnail_url || image.url}
                     alt={image.generation_log.prompt}
+                    loading="lazy"
+                    width={512}
+                    height={512}
                     className="w-full h-full object-cover cursor-pointer transition duration-300 group-hover:opacity-75"
                     onClick={() => setSelectedImage(image)}
                   />

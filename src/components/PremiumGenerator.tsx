@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import InPageNavbar from './InPageNavbar';
 import NSFWModal from './NSFWModal';
@@ -118,6 +119,11 @@ const PremiumGenerator: React.FC<PremiumGeneratorProps> = ({ openAuthModal }) =>
 
   return (
     <div className="w-full md:w-3/4 mx-auto bg-white border-4 border-black rounded-xl overflow-hidden shadow-xl">
+      <Helmet>
+        <title>Premium AI Image Generator – Faster Models, Prompt Assist</title>
+        <meta name="description" content="Access premium AI image models with faster generation and automatic prompt optimization." />
+        <link rel="canonical" href="https://yourdomain.com/premium" />
+      </Helmet>
       <InPageNavbar pageColor="bg-purple-500" />
       <div className="bg-gradient-to-r from-purple-500 to-purple-700 text-white p-4 md:p-6">
         <h2 className="text-2xl md:text-4xl font-bold text-center">
@@ -184,7 +190,7 @@ const PremiumGenerator: React.FC<PremiumGeneratorProps> = ({ openAuthModal }) =>
         {generatedImageUrl ? (
           <div className="w-full">
             <p className="text-center text-sm font-bold text-gray-700 mb-4">Your generated image:</p>
-            <img src={generatedImageUrl} alt="Generated" className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
+            <img src={generatedImageUrl} alt="Generated" loading="lazy" width={1024} height={1024} className="mx-auto rounded-md border-2 border-black shadow-lg max-w-full h-auto" />
             <div className="mt-6 text-center">
               <Link to="/gallery" className="inline-block bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition duration-300 font-bold">
                 Check Out and Vote on Other Generations
