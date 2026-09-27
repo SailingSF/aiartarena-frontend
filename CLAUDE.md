@@ -182,6 +182,16 @@ null and there is nothing to link to. `ImageModal` renders that provenance, so a
 edit's `generation_log.prompt` is labelled as an instruction rather than as the prompt
 that made the picture.
 
+## Prompt improvement
+
+`PremiumGenerator` has an "Improve" button that calls `POST /api/improve-prompt/`
+(free, for accounts with at least 1 credit -- the button is hidden otherwise) and puts
+the result in the editable improved-prompt box. Whatever is in that box is sent as
+`improved_prompt` and used verbatim. The improvement is written for one model, so the
+box warns when the selected model changes. The free generator deliberately has no such
+step: free users only ever see an improved prompt returned with a finished image, so the
+backend can't be used as a free text generator. Don't add one there.
+
 ## Git workflow
 
 Branch off `main` for features and open a PR for review before merging — don't commit directly to `main`.
