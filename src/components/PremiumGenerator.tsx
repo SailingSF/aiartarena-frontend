@@ -15,6 +15,13 @@ import { SIGNUP_BONUS_CREDITS } from '../constants';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL as string | undefined;
 
+// DRF validation errors arrive as a JSON array of strings, everything else as
+// {detail} or {message}; prefer the backend's explanation over axios's.
+const backendMessage = (error: any): string | undefined => {
+  const data = error.response?.data;
+  return Array.isArray(data) ? data[0] : (data?.detail ?? data?.message);
+};
+
 const PremiumGenerator: React.FC = () => {
   const { account, isLoggedIn, openAuthModal, logout, refresh } = useAuth();
   const [prompt, setPrompt] = useState<string>('');
@@ -24,6 +31,10 @@ const PremiumGenerator: React.FC = () => {
   // Kept so the result can be sent to the editor by reference rather than by url.
   const [generatedImageId, setGeneratedImageId] = useState<number | null>(null);
   const [improvedPrompt, setImprovedPrompt] = useState<string | null>(null);
+  // Which model the improved prompt was written for: the improver tailors it to one
+  // model's strengths and prompt length, so switching models makes it stale.
+  const [improvedForModel, setImprovedForModel] = useState<string | null>(null);
+  const [isImproving, setIsImproving] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showNSFWWarning, setShowNSFWWarning] = useState<boolean>(false);
   const [isLoadingRandomPrompt, setIsLoadingRandomPrompt] = useState<boolean>(false);
@@ -49,6 +60,7 @@ const PremiumGenerator: React.FC = () => {
     setPrompt('');
     setNegativePrompt('');
     setImprovedPrompt(null);
+    setImprovedForModel(null);
     setGeneratedImageUrl(null);
     setGeneratedImageId(null);
     setNotice(null);
@@ -107,6 +119,7 @@ const PremiumGenerator: React.FC = () => {
       setGeneratedImageId(response.data.image_id ?? null);
       setIsResultPublic(!isPrivate);
       setImprovedPrompt(response.data.improved_prompt ?? null);
+      setImprovedForModel(selectedModel);
       track('generate_image', { mode: 'premium' });
       // The generation just spent credits; pull the new balance so the navbar pill
       // ticks down instead of showing what the user had a moment ago.
@@ -126,30 +139,52 @@ const PremiumGenerator: React.FC = () => {
         // Re-read the account: a 403 here can also mean the local `is_premium` went
         // stale mid-session, and the backend's message names that case explicitly.
         void refresh();
-        const data = error.response?.data;
-        const backendMessage: string | undefined = Array.isArray(data)
-          ? data[0]
-          : (data?.detail ?? data?.message);
         setNotice(
-          backendMessage ??
+          backendMessage(error) ??
             "You don't have enough credits or aren't on the right membership tier for this request."
         );
       } else {
         // eslint-disable-next-line no-console
         console.error('Error generating image:', error);
-        // DRF validation errors arrive as a JSON array of strings; prefer the
-        // backend's explanation over "Request failed with status code 400".
-        const data = error.response?.data;
-        const backendMessage: string | undefined = Array.isArray(data)
-          ? data[0]
-          : (data?.detail ?? data?.message);
         setNotice(
-          backendMessage ??
+          backendMessage(error) ??
             `Error generating image: ${error.message}. This is probably not Max's fault. I would try again a few times before giving up. But I'm built different, so do you.`
         );
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Free and unmetered for accounts with credits: the result lands in the editable
+  // improved-prompt box, and whatever is in that box is what generation sends.
+  const improvePrompt = async (): Promise<void> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      openAuthModal();
+      return;
+    }
+    setIsImproving(true);
+    setNotice(null);
+    try {
+      if (!API_BASE_URL) throw new Error('Missing REACT_APP_API_BASE_URL');
+      const response = await axios.post(
+        `${API_BASE_URL}/api/improve-prompt/`,
+        { prompt, selected_model: selectedModel },
+        { headers: { Authorization: `Token ${token}` } }
+      );
+      setImprovedPrompt(response.data.improved_prompt);
+      setImprovedForModel(selectedModel);
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        logout();
+        openAuthModal('Your session expired. Please log in again.');
+      } else {
+        if (error.response?.status === 403) void refresh();
+        setNotice(backendMessage(error) ?? 'Failed to improve the prompt. Please try again.');
+      }
+    } finally {
+      setIsImproving(false);
     }
   };
 
@@ -176,6 +211,10 @@ const PremiumGenerator: React.FC = () => {
   // Only claim someone can't afford it once the account has actually loaded --
   // otherwise a slow /api/me/ would block the button on a balance we don't know yet.
   const cannotAfford = isLoggedIn && account != null && cost > 0 && balance < cost;
+  // Mirrors the backend gate on /api/improve-prompt/ (validate_user: at least 1 credit).
+  const canImprove = isLoggedIn && account != null && balance >= 1;
+  const improvedForLabel = models.find((model) => model.key === improvedForModel)?.label;
+  const improvedIsStale = improvedPrompt != null && improvedForModel !== selectedModel;
 
   const generateLabel = (): string => {
     if (isLoading) return 'Generating...';
@@ -245,7 +284,24 @@ const PremiumGenerator: React.FC = () => {
               className="w-full rounded-md border-2 border-black p-2 text-sm"
               rows={3}
             />
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              {canImprove && (
+                <button
+                  type="button"
+                  onClick={improvePrompt}
+                  disabled={isImproving || !prompt.trim() || !selectedModel}
+                  className="flex w-full items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition duration-300 hover:bg-purple-700 disabled:opacity-50 sm:w-auto"
+                >
+                  <span role="img" aria-label="sparkles" className="text-xl">
+                    ✨
+                  </span>
+                  <span>
+                    {isImproving
+                      ? 'Improving...'
+                      : `Improve for ${currentModel?.label ?? 'this model'} · free`}
+                  </span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={generateRandomPrompt}
@@ -283,7 +339,7 @@ const PremiumGenerator: React.FC = () => {
                 htmlFor="improvedPrompt"
                 className="mb-1 block text-sm font-bold text-gray-700"
               >
-                Improved Prompt (Optional and Final)
+                Improved Prompt (edit freely — this is what gets sent)
               </label>
               <textarea
                 id="improvedPrompt"
@@ -293,6 +349,12 @@ const PremiumGenerator: React.FC = () => {
                 className="w-full rounded-md border-2 border-black p-2 text-sm"
                 rows={4}
               />
+              {improvedIsStale && (
+                <p className="mt-1 text-sm text-amber-700">
+                  Written for {improvedForLabel ?? 'another model'}.
+                  {canImprove && ' Improve again to tailor it to this one.'}
+                </p>
+              )}
             </div>
           )}
           <PrivateToggle checked={isPrivate} onChange={setIsPrivate} />
